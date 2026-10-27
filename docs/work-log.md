@@ -297,3 +297,20 @@
 - Objective: user authorized pushing all pending corrections to the existing `main` branch.
 - Investigation and verification: confirmed the intended origin, preserved the existing branch, fetched `origin/main`, and found no divergence. Both syntax checks, all 27 regression checks, and the diff whitespace check passed. Reviewed the pending source changes; temporary visual-test selection is absent.
 - Publication checkpoint: include clean emergence, occasional longer catches, viewport-gated visitors, the letter-peek catch, tests, README, work log, and three preview images in `Refine bug emergence and add letter-peek catches`. Commit and push are the remaining publication steps; their final result will be reported in chat. The command record is in [push-commands.md](push-commands.md).
+
+
+## 2026-10-27 — Page-wide visits and recurring hero bugs
+
+- Objective and starting point: fast scrolling reset section dwell timers, offscreen visitors blocked replacements, and the hero was excluded from recurrence. Preserve current motion, visible emergence, and sparse presentation.
+- Checkpoint 1 — Investigation: replace section-ratio gating with current viewport geometry and a page-wide dwell clock; let missed offscreen visitors release their slot with a short relocation pause. Include the hero after the original user bug is caught, keeping the original introduction.
+- Scope clarification: user confirmed the interaction must remain based on sections. Keep section-owned shelters and catches; only carry the wait across section changes and include the hero in recurrence. No free-floating viewport bugs or unrelated placements.
+- Checkpoint 2 — Implementation: current viewport geometry selects the visible section without a 40% ratio gate. A shared dwell clock survives scrolling, with one recurring visitor and the normal 15-second cooldown. Fully offscreen missed visitors release their slot with a 2-second relocation pause; focused bugs and active catches remain protected. Hero recurrence starts after the original user bug is caught or its introduction was skipped by manual interaction. Updated [script](../dist/app.js).
+- Checkpoint 3 — Verification and docs: both syntax checks, all 31 regression checks, and the whitespace check passed. New checks cover elapsed dwell across sections, hero recurrence, missed-visitor relocation, and a same-section edge fallback when a button is too low. Updated the event-listener mock to preserve multiple scroll listeners and adjusted timer expectations for the shared scheduler. Browser caught the original button bug, returned to the hero, and confirmed a new visitor owned by section `top`, with its shelter at y330–535 inside the viewport. Saved [preview](recurring-hero-preview.png); updated [README](../README.md).
+- Outcome: completed locally. Sections still own all shelters and catches; only timing is shared. Existing artwork, crawl paths, and catch styles are preserved. No commit, push, or deployment performed for this revision.
+
+
+## 2026-10-27 — Publish recurring section visits
+
+- Objective: user authorized pushing the section-based timing and recurring hero changes on existing `main`.
+- Verification: checked the branch, destination, pending files, and whitespace; both syntax checks and all 31 regression checks passed. Fetched `origin/main`; no divergence.
+- Publication checkpoint: commit the implementation, tests, README, work log, command record, and recurring-hero preview as `Keep section bugs recurring while browsing`. Push and remote verification follow; final publication result is reported in chat.

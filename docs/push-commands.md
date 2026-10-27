@@ -77,3 +77,21 @@ git rev-parse HEAD
 git ls-remote origin refs/heads/main
 git status --short
 ```
+
+## Recurring section visits — 2026-10-27
+
+```powershell
+node --check dist/app.js
+node --check serve.mjs
+node --test checks/interaction.test.mjs
+git diff --check
+git fetch origin main
+git rev-list --left-right --count HEAD...origin/main
+git add README.md dist/app.js checks/interaction.test.mjs docs/work-log.md docs/push-commands.md docs/recurring-hero-preview.png
+git diff --cached --check
+git commit -m "Keep section bugs recurring while browsing"
+git push origin main
+git rev-parse HEAD
+git ls-remote origin refs/heads/main
+git status --short
+```

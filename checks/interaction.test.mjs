@@ -34,18 +34,18 @@ function setup(reduced = true, storage = new Map(), randomValue = .75) {
   }
   const bugs = [element(), element(), element()];
   const nodes = Object.fromEntries(['#web-prey', '#home-eyes', '#silk-thread', '#silk-path', '#bug-hint', '#mascot', '.nav .brand img', '#status', '#puff', '#theme', '.primary', 'meta[name="theme-color"]'].map(key => [key, element()]));
-  const document = { querySelector: key => nodes[key], querySelectorAll: () => bugs, documentElement: element(), body: element() };
+  const document = { querySelector: key => nodes[key], querySelectorAll: selector => selector === '.bug' ? bugs : [], documentElement: element(), body: element() };
   document.activeElement = document.body;
   const preferences = { matches: reduced, addEventListener(name, handler) { this.handler = handler; } };
   const handlers = {};
-  const testApi = runInNewContext(source + ';({chooseCatchStyle, findLetterCatchOrigin, showTurnHint, isVisibleCrawlArea, chooseLocalCatchOrigin, scheduleVisitor, setReadingSection: section => { visibleSection = section; visibleSince = Date.now() - 5000; }, sectionEggDelay, retireVisitor, setVisitor: value => { activeVisitor = value; }})', {
+  const testApi = runInNewContext(source + ';({chooseSection, viewportSectionArea, chooseCatchStyle, findLetterCatchOrigin, showTurnHint, isVisibleCrawlArea, chooseLocalCatchOrigin, scheduleVisitor, setReadingSection: section => { visibleSection = section; visibleSince = Date.now() - 5000; }, sectionEggDelay, retireVisitor, setVisitor: value => { activeVisitor = value; }})', {
     Math: Object.assign(Object.create(Math), { random: () => randomValue }),
     getComputedStyle: () => ({ color: '#8cc3ff' }),
     requestAnimationFrame: callback => { frames.push(callback); return frames.length; },
     get scrollX() { return scrollState.x; }, get scrollY() { return scrollState.y; }, cancelAnimationFrame() {},
     NodeFilter: {SHOW_TEXT:4}, document, matchMedia: () => preferences, innerWidth: 390, innerHeight: 800,
-    setTimeout: callback => { pendingTimers.push(callback); return pendingTimers.length; }, clearTimeout() {},
-    addEventListener: (name, handler) => { handlers[name] = handler; }, console,
+    setTimeout: (callback, delay) => { callback.delay = delay; pendingTimers.push(callback); return pendingTimers.length; }, clearTimeout() {},
+    addEventListener: (name, handler) => { const previous=handlers[name]; handlers[name] = previous ? (...args) => {previous(...args);handler(...args);} : handler; }, console,
     sessionStorage: { getItem: key => storage.get(key), setItem: (key, value) => storage.set(key, value) }
   });
   return { frames, scrollState, bugs, nodes, document, animations, preferences, handlers, pendingTimers, sectionDelay: testApi.sectionEggDelay, lifecycle: testApi };
@@ -137,7 +137,7 @@ test('automatic introduction catches only one bug, then prompts beside a survivo
   assert.equal(state.nodes['#status'].classList.contains('visible'), false);
   assert.equal(state.nodes['#bug-hint'].textContent, 'Your turn. Click or tap a bug to squash it.');
   assert.equal(state.document.activeElement, state.document.body);
-  assert.equal(setup(false, storage).pendingTimers.length, 1);
+  assert.equal(setup(false, storage).pendingTimers.length, 2);
 });
 
 test('reduced motion shows the prompt without an automatic catch', () => {
@@ -166,13 +166,13 @@ test('manual catching before the introduction prevents a second automatic chase'
 });
 
 
-test('section visitors require dwell time and both cooldowns', () => {
+test('page-wide visitors require initial dwell and the shared cooldown', () => {
   const { sectionDelay } = setup();
-  assert.equal(sectionDelay(100000, 100000, -Infinity, -Infinity), 4000);
-  assert.equal(sectionDelay(120000, 100000, -Infinity, -Infinity), 0);
-  assert.equal(sectionDelay(120000, 100000, 110000, -Infinity), 5000);
-  assert.equal(sectionDelay(120000, 100000, 110000, 110000), 5000);
-  assert.equal(sectionDelay(240000, 220000, 110000, 110000), 0);
+  assert.equal(sectionDelay(100000, 100000, -Infinity), 4000);
+  assert.equal(sectionDelay(120000, 100000, -Infinity), 0);
+  assert.equal(sectionDelay(120000, 100000, 110000), 5000);
+  assert.equal(sectionDelay(120000, 100000, 110000), 5000);
+  assert.equal(sectionDelay(240000, 220000, 110000), 0);
 });
 
 
@@ -310,8 +310,8 @@ test('a retreating visitor can be caught before its removal timer', async () => 
 
 test('old session flags do not suppress the introduction on reload', () => {
   const storage = new Map([['ziki-bug-intro-shown','true'],['ziki-bugs-discovered','true']]);
-  assert.equal(setup(false,storage).pendingTimers.length,1);
-  assert.equal(setup(false,storage).pendingTimers.length,1);
+  assert.equal(setup(false,storage).pendingTimers.length,2);
+  assert.equal(setup(false,storage).pendingTimers.length,2);
 });
 
 test('section appearances are scheduled even when the first bug is ignored', () => {
@@ -463,4 +463,60 @@ test('letter catch rises, looks, reels the bug and retreats without moving the h
   state.animations[3].finish(); await catching;
   assert.equal(state.nodes['#mascot'].classList.contains('visible'),false);
   assert.equal(state.bugs[1].disabled,false);
+});
+
+test('moving between visible areas keeps elapsed page dwell and permits a partial section', () => {
+  const state=setup(false);
+  const first={};
+  const next={classList:{contains:()=>false},getBoundingClientRect:()=>({left:0,top:-600,right:390,bottom:1500})};
+  state.lifecycle.setReadingSection(first);
+  state.document.querySelectorAll=selector=>selector==='main > section'?[next]:[];
+  state.lifecycle.chooseSection();
+  assert.equal(state.pendingTimers.at(-1).delay,100);
+});
+
+test('hero re-enters recurring visits after the original button bug is caught', () => {
+  const state=setup(false);
+  const hero={classList:{contains:name=>name==='hero'},getBoundingClientRect:()=>({left:0,top:80,right:390,bottom:700})};
+  state.document.querySelectorAll=selector=>selector==='main > section'?[hero]:[];
+  state.document.documentElement.classList.add('hero-user-turn');
+  state.lifecycle.setReadingSection({});
+  state.lifecycle.chooseSection();
+  assert.equal(state.pendingTimers.at(-1).delay,1000);
+  state.bugs[1].classList.add('caught');
+  state.lifecycle.chooseSection();
+  assert.equal(state.pendingTimers.at(-1).delay,100);
+});
+
+test('a missed offscreen visitor releases its slot with a two-second relocation pause', () => {
+  const state=setup(false);
+  const bug=state.bugs[0];
+  bug.getBoundingClientRect=()=>({left:20,top:-80,right:60,bottom:-40});
+  let removed=false;
+  const next={classList:{contains:()=>false},getBoundingClientRect:()=>({left:0,top:0,right:390,bottom:800})};
+  state.document.querySelectorAll=selector=>selector==='main > section'?[next]:[];
+  state.lifecycle.setReadingSection({});
+  state.lifecycle.setVisitor({bug,section:{},nook:{remove(){removed=true;}}});
+  state.lifecycle.chooseSection();
+  assert.equal(removed,true);
+  assert.ok(state.pendingTimers.at(-1).delay>=1900 && state.pendingTimers.at(-1).delay<=2000);
+});
+
+test('a low button shelter falls back to an onscreen edge in the same section', () => {
+  const state=setup();
+  const created=[];
+  state.document.createElement=()=>{
+    const classes=new Set();
+    const node={style:{setProperty(){}},dataset:{},
+      classList:{add:(...names)=>names.forEach(n=>classes.add(n)),remove:(...names)=>names.forEach(n=>classes.delete(n)),contains:n=>classes.has(n)},
+      append(){},addEventListener(){},setAttribute(){},remove(){assert.fail('visible fallback should remain');},
+      getBoundingClientRect(){const top=this.style.top==='3px'?40:780;return {left:24,right:366,top,bottom:top+90,width:342,height:90};}};
+    created.push(node);return node;
+  };
+  const section={querySelectorAll:()=>[],append(){},getBoundingClientRect:()=>({left:24,top:40,right:366,bottom:900,width:342,height:860})};
+  state.lifecycle.setReadingSection(section);state.lifecycle.scheduleVisitor();
+  state.pendingTimers.at(-1)();
+  assert.equal(created[0].style.visibility,'');
+  assert.equal(created[0].style.top,'3px');
+  assert.equal(state.pendingTimers.at(-1).delay,12000);
 });

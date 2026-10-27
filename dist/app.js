@@ -295,6 +295,10 @@ async function catchBug(bug, event) {
     busy = false;
     bugs.forEach(item => { item.disabled = item.classList.contains('caught'); });
     if (bug.dataset?.sectionEgg) retireVisitor();
+    else if (bug === userBug && bug.classList.contains('caught')) {
+      lastAnyVisitor = Date.now();
+      scheduleVisitor();
+    }
     if (!event.automatic && hadFocus && document.activeElement === document.body) {
       if (returnSection) {
         returnSection.setAttribute('tabindex', '-1');
@@ -322,20 +326,18 @@ reducedMotion.addEventListener('change', event => {
 // A resized layout can invalidate the path; ordinary scrolling must not finish it.
 addEventListener('resize', () => activeAnimation?.finish());
 
-// Quiet section visitors: active reading time, one visitor, long cooldowns.
-const eggTiming = { dwell: 4000, globalCooldown: 15000, sectionCooldown: 15000, lifetime: 12000 };
-function sectionEggDelay(now, visibleSince, lastAny, lastSection) {
+// Page-wide visitors: one recurring bug, visible shelters, and a shared cooldown.
+const eggTiming = { dwell: 4000, globalCooldown: 15000, lifetime: 12000, relocation: 2000 };
+function sectionEggDelay(now, visibleSince, lastAny) {
   return Math.max(0, eggTiming.dwell - (now - visibleSince),
-    eggTiming.globalCooldown - (now - lastAny), eggTiming.sectionCooldown - (now - lastSection));
+    eggTiming.globalCooldown - (now - lastAny));
 }
 let activeVisitor;
 let visitorTimer;
 let dwellTimer;
 let visibleSection;
-let visibleSince = 0;
+let visibleSince = Date.now();
 let lastAnyVisitor = -Infinity;
-const sectionVisits = new Map();
-const sectionVisibility = new Map();
 function retireVisitor() {
   if (!activeVisitor || activeVisitor.retreating) return;
   clearTimeout(visitorTimer);
@@ -356,13 +358,12 @@ function retireVisitor() {
   }
   finishVisitorRetirement(visitor);
 }
-function finishVisitorRetirement(visitor) {
+function finishVisitorRetirement(visitor, missed = false) {
   if (activeVisitor !== visitor) return;
   const { bug, nook, section } = visitor;
   visitor.travel?.cancel();
   visitor.turn?.cancel();
-  lastAnyVisitor = Date.now();
-  sectionVisits.set(section, lastAnyVisitor);
+  lastAnyVisitor = Date.now() - (missed ? eggTiming.globalCooldown - eggTiming.relocation : 0);
   const index = bugs.indexOf(bug);
   if (index >= 0) bugs.splice(index, 1);
   nook.remove();
@@ -372,8 +373,8 @@ function finishVisitorRetirement(visitor) {
 
 function placeVisitorShelter(nook, section, preferWord) {
   const bounds = section.getBoundingClientRect();
-  const headings = [...section.querySelectorAll('h2, h3')].filter(isVisibleShelter);
-  const cards = [...section.querySelectorAll('.conversation, .steps article')].filter(isVisibleShelter);
+  const headings = [...section.querySelectorAll('h1, h2, h3')].filter(isVisibleShelter);
+  const cards = [...section.querySelectorAll('.conversation, .steps article, .primary-shelter')].filter(isVisibleShelter);
   const heading = headings[Math.floor(Math.random() * headings.length)];
   const card = cards[Math.floor(Math.random() * cards.length)];
   if ((preferWord || !card) && heading) {
@@ -410,11 +411,14 @@ function placeVisitorShelter(nook, section, preferWord) {
 }
 function scheduleVisitor() {
   clearTimeout(dwellTimer);
-  if (!visibleSection || document.hidden || activeVisitor) return;
-  const section = visibleSection;
-  const delay = sectionEggDelay(Date.now(), visibleSince, lastAnyVisitor, sectionVisits.get(section) ?? -Infinity);
+  if (document.hidden || activeVisitor) return;
+  if (!visibleSection) { dwellTimer = setTimeout(() => { dwellTimer = undefined; chooseSection(); }, 1000); return; }
+  const delay = sectionEggDelay(Date.now(), visibleSince, lastAnyVisitor);
   dwellTimer = setTimeout(() => {
-    if (document.hidden || section !== visibleSection) return;
+    dwellTimer = undefined;
+    if (document.hidden || !visibleSection) return;
+    const section = visibleSection;
+    if (section.classList?.contains('hero') && !userBug.classList.contains('caught') && !introCancelled) { chooseSection(); return; }
     if (busy) { dwellTimer = setTimeout(scheduleVisitor, 2000); return; }
     const nook = document.createElement('div');
     nook.className = 'bug-nook';
@@ -443,6 +447,14 @@ function scheduleVisitor() {
     const visitor = { bug, nook, section };
     configureVisitorRoute(visitor);
     if (!isVisibleCrawlArea(nook.getBoundingClientRect(), innerWidth, innerHeight)) {
+      // A visible button may sit too low for a crawl beneath it. Try this
+      // section's own edge before postponing the visit.
+      nook.classList.remove('word-nook','path-up','path-down','path-diagonal','path-straight');
+      nook.style.left = '4px';
+      nook.style.top = '3px';
+      configureVisitorRoute(visitor);
+    }
+    if (!isVisibleCrawlArea(nook.getBoundingClientRect(), innerWidth, innerHeight)) {
       nook.remove();
       dwellTimer = setTimeout(scheduleVisitor, 1000);
       return;
@@ -453,24 +465,41 @@ function scheduleVisitor() {
     visitorTimer = setTimeout(retireVisitor, eggTiming.lifetime);
   }, Math.max(100, delay));
 }
+function viewportSectionArea(rect, width, height) {
+  return Math.max(0, Math.min(rect.right, width) - Math.max(rect.left, 0)) *
+    Math.max(0, Math.min(rect.bottom, height) - Math.max(rect.top, 0));
+}
 function chooseSection() {
-  const candidates = [...sectionVisibility].filter(([, ratio]) => ratio >= .4).sort((a, b) => b[1] - a[1]);
-  const next = document.hidden ? undefined : candidates[0]?.[0];
+  if (document.hidden) {
+    visibleSection = undefined;
+    clearTimeout(dwellTimer);
+    return;
+  }
+  const candidates = [...document.querySelectorAll('main > section')]
+    .filter(section => !(section.classList.contains('hero') &&
+      !userBug.classList.contains('caught') && !introCancelled))
+    .map(section => ({section, area: viewportSectionArea(section.getBoundingClientRect(), innerWidth, innerHeight)}))
+    .filter(item => item.area > 0).sort((a,b) => b.area-a.area);
+  const next = candidates[0]?.section;
+  if (activeVisitor && !busy && document.activeElement !== activeVisitor.bug &&
+      viewportSectionArea(activeVisitor.bug.getBoundingClientRect(), innerWidth, innerHeight) === 0) {
+    // A missed bug must not monopolize the only slot on another part of the page.
+    visibleSection = next;
+    finishVisitorRetirement(activeVisitor, true);
+  }
   if (next !== visibleSection) {
     visibleSection = next;
-    visibleSince = Date.now();
-    if (activeVisitor && activeVisitor.section !== next) retireVisitor();
+    // Keep the same page-wide clock as the reader moves through the layout.
     scheduleVisitor();
-  }
+  } else if (!activeVisitor && !dwellTimer) scheduleVisitor();
 }
-if (typeof IntersectionObserver !== 'undefined') {
-  const sectionObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => sectionVisibility.set(entry.target, entry.intersectionRatio));
-    chooseSection();
-  }, { threshold: [0, .4, .6, .8, 1] });
-  document.querySelectorAll('main > .section, main > .closing').forEach(section => sectionObserver.observe(section));
-  document.addEventListener('visibilitychange', chooseSection);
-}
+addEventListener('scroll', chooseSection, {passive:true});
+addEventListener('resize', chooseSection);
+document.addEventListener?.('visibilitychange', () => {
+  if (!document.hidden) visibleSince = Date.now();
+  chooseSection();
+});
+chooseSection();
 
 
 if (document.querySelector('.hero-nook')) {
