@@ -44,7 +44,7 @@ git status --short
 
 ## Record the verified handoff
 
-After verifying the first push, its outcome is appended to the work log and committed with this record:
+The first push succeeded at `a97b1f79fb11b7fe2ce7f9b285c8d2b27bd4fd6c`; the remote and local hashes matched and the working tree was clean. Its outcome is appended to the work log and committed with this record:
 
 ```powershell
 git add docs/work-log.md docs/push-commands.md

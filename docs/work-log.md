@@ -260,3 +260,6 @@
 - Preparation: added [.gitignore](../.gitignore) for dependencies, environment secrets, and local logs. Updated [README](../README.md) with the repository URL and undeployed status. Asked the user for the exact initial branch name as required by their Git agreement; no branch created yet.
 
 - Checkpoint — Repository setup: user approved `main`; initialized a standalone repository at this project root and added the requested GitHub origin. Rechecked remote HEAD with approved network access; still empty. Both syntax checks and all twenty-one regression checks passed during preparation. Added [push command record](push-commands.md). Initial commit and push next.
+
+- Checkpoint — Initial publication: committed the prototype as `a97b1f79fb11b7fe2ce7f9b285c8d2b27bd4fd6c` and successfully pushed `main` to the requested origin. Remote `refs/heads/main` matched local HEAD and the working tree was clean. Removed one trailing-whitespace line found during the staged diff check before committing; no behavior changed.
+- Outcome: prototype source published to GitHub on `main`; website deployment has not been performed. The final handoff documentation is being committed and pushed with the exact commands in [push-commands.md](push-commands.md). All twenty-one regression checks and both syntax checks passed during preparation.
