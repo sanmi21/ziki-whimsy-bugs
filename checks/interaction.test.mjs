@@ -38,12 +38,12 @@ function setup(reduced = true, storage = new Map(), randomValue = .75) {
   document.activeElement = document.body;
   const preferences = { matches: reduced, addEventListener(name, handler) { this.handler = handler; } };
   const handlers = {};
-  const testApi = runInNewContext(source + ';({scheduleVisitor, setReadingSection: section => { visibleSection = section; visibleSince = Date.now() - 5000; }, sectionEggDelay, retireVisitor, setVisitor: value => { activeVisitor = value; }})', {
+  const testApi = runInNewContext(source + ';({chooseCatchStyle, findLetterCatchOrigin, showTurnHint, isVisibleCrawlArea, chooseLocalCatchOrigin, scheduleVisitor, setReadingSection: section => { visibleSection = section; visibleSince = Date.now() - 5000; }, sectionEggDelay, retireVisitor, setVisitor: value => { activeVisitor = value; }})', {
     Math: Object.assign(Object.create(Math), { random: () => randomValue }),
     getComputedStyle: () => ({ color: '#8cc3ff' }),
     requestAnimationFrame: callback => { frames.push(callback); return frames.length; },
     get scrollX() { return scrollState.x; }, get scrollY() { return scrollState.y; }, cancelAnimationFrame() {},
-    document, matchMedia: () => preferences, innerWidth: 390, innerHeight: 800,
+    NodeFilter: {SHOW_TEXT:4}, document, matchMedia: () => preferences, innerWidth: 390, innerHeight: 800,
     setTimeout: callback => { pendingTimers.push(callback); return pendingTimers.length; }, clearTimeout() {},
     addEventListener: (name, handler) => { handlers[name] = handler; }, console,
     sessionStorage: { getItem: key => storage.get(key), setItem: (key, value) => storage.set(key, value) }
@@ -361,4 +361,106 @@ test('visible intro still runs when reload restores the header above the viewpor
   state.animations[2].finish();
   await intro;
   assert.equal(state.bugs[0].classList.contains('caught'),true);
+});
+
+
+test('occasional distant catches use a farther visible card edge', () => {
+  const {chooseLocalCatchOrigin} = setup().lifecycle;
+  const bounds={left:300,right:750,top:100,bottom:500};
+  const target={x:350,y:450};
+  const near=chooseLocalCatchOrigin(bounds,target,900,700,()=>.9);
+  const far=chooseLocalCatchOrigin(bounds,target,900,700,()=>.1);
+  const distance=p=>Math.hypot(p.x-target.x,p.y-target.y);
+  assert.ok(distance(far)>distance(near)+60);
+  assert.ok(far.x>=24&&far.x<=876&&far.y>=20&&far.y<=680);
+});
+
+test('emergence requires the whole crawl area inside the viewport', () => {
+  const {isVisibleCrawlArea} = setup().lifecycle;
+  const rect = {left:24, top:300, right:366, bottom:505, width:342, height:205};
+  assert.equal(isVisibleCrawlArea(rect,390,800), true);
+  assert.equal(isVisibleCrawlArea({...rect,top:650,bottom:855},390,800), false);
+  assert.equal(isVisibleCrawlArea({...rect,top:-20},390,800), false);
+  assert.equal(isVisibleCrawlArea({...rect,right:410},390,800), false);
+  assert.equal(isVisibleCrawlArea({...rect,left:-10},390,800), false);
+  assert.equal(isVisibleCrawlArea({...rect,width:0},390,800), false);
+});
+
+test('scheduler discards an offscreen shelter before registering a bug and retries', () => {
+  const state = setup();
+  let removed = false;
+  const created = [];
+  state.document.createElement = () => {
+    const classes = new Set();
+    const node = {style:{setProperty() {}}, dataset:{},
+      classList:{add:name=>classes.add(name), remove:name=>classes.delete(name), contains:name=>classes.has(name)},
+      append() {}, addEventListener() {}, setAttribute() {},
+      getBoundingClientRect:()=>({left:24,top:750,right:366,bottom:955,width:342,height:205}),
+      remove() {removed=true;} };
+    created.push(node);
+    return node;
+  };
+  const section = {querySelectorAll:()=>[], append() {},
+    getBoundingClientRect:()=>({left:24,top:750,right:366,bottom:1200,width:342,height:450})};
+  state.lifecycle.setReadingSection(section);
+  state.lifecycle.scheduleVisitor();
+  state.pendingTimers.at(-1)();
+  assert.equal(removed,true);
+  assert.equal(created[0].style.visibility,'hidden');
+  assert.equal(state.bugs.length,3);
+  // The retry schedules a fresh attempt instead of leaving an active visitor.
+  const count=state.pendingTimers.length;
+  state.pendingTimers.at(-1)();
+  assert.equal(state.pendingTimers.length,count+1);
+});
+
+test('button bug waits for its shelter to enter the viewport before starting its crawl', () => {
+  const state = setup();
+  let top=780;
+  state.nodes['.primary-shelter > .hero-nook-b'] = {
+    getBoundingClientRect:()=>({left:100,right:235,top,bottom:top+100,width:135,height:100})
+  };
+  state.document.documentElement.classList.remove('hero-user-turn');
+  state.lifecycle.showTurnHint();
+  assert.equal(state.document.documentElement.classList.contains('hero-user-turn'),false);
+  top=500;
+  state.handlers.scroll();
+  assert.equal(state.document.documentElement.classList.contains('hero-user-turn'),true);
+});
+
+test('three catch styles are available only when a visible letter is available', () => {
+  const {chooseCatchStyle} = setup().lifecycle;
+  assert.equal(chooseCatchStyle(()=>.1,true),'swoop');
+  assert.equal(chooseCatchStyle(()=>.5,true),'web');
+  assert.equal(chooseCatchStyle(()=>.9,true),'letter');
+  assert.equal(chooseCatchStyle(()=>.9,false),'web');
+});
+
+test('letter catch rises, looks, reels the bug and retreats without moving the header', async () => {
+  const state=setup(false,new Map(),.9);
+  const text={textContent:'Ziki'};
+  const heading={};
+  const section={querySelectorAll:()=>[heading]};
+  state.bugs[0].closest=()=>section;
+  state.document.createTreeWalker=()=>{let read=false;return {nextNode:()=>read?null:(read=true,text)};};
+  state.document.createRange=()=>({setStart(){},setEnd(){},
+    getBoundingClientRect:()=>({left:240,top:150,right:260,bottom:180,width:20,height:30})});
+  const catching=state.bugs[0].handlers.click({detail:1});
+  assert.equal(state.nodes['#mascot'].dataset.catchStyle,'letter');
+  assert.equal(state.nodes['#mascot'].style.left,'250px');
+  assert.equal(state.nodes['#mascot'].style.top,'129px');
+  assert.equal(state.animations[0].options.duration,480);
+  assert.equal(state.nodes['.nav .brand img'].classList.contains('away'),false);
+  assert.equal(state.nodes['#silk-thread'].classList.contains('visible'),false);
+  state.animations[0].finish(); await new Promise(setImmediate);
+  assert.equal(state.animations[1].options.duration,320);
+  assert.equal(state.bugs[0].classList.contains('caught'),false);
+  state.animations[1].finish(); await new Promise(setImmediate);
+  assert.equal(state.animations[2].owner,state.nodes['#web-prey']);
+  assert.equal(state.nodes['#silk-thread'].classList.contains('visible'),true);
+  state.animations[2].finish(); await new Promise(setImmediate);
+  assert.equal(state.animations[3].keyframes[1].clipPath,'inset(0 0 100% 0)');
+  state.animations[3].finish(); await catching;
+  assert.equal(state.nodes['#mascot'].classList.contains('visible'),false);
+  assert.equal(state.bugs[1].disabled,false);
 });

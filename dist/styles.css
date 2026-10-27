@@ -71,7 +71,7 @@
 /* Occasional visitors emerge under a section's top edge, clear of its copy. */
 main>.section,main>.closing{position:relative}
 .bug-nook{position:absolute;top:1px;right:18px;width:55px;height:58px;overflow:hidden;z-index:2;pointer-events:none}
-.bug-nook::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--bg);z-index:3}
+.bug-nook::before{content:none}
 .bug.section-bug{left:4px;top:4px;color:#8caac9;pointer-events:auto;animation:peek-out 1.8s ease-out both;filter:none}
 @keyframes peek-out{from{translate:0 -48px}to{translate:0 0}}
 @media(prefers-reduced-motion:reduce){.bug.section-bug{animation:none}}
@@ -283,3 +283,6 @@ main>.section,main>.closing{position:relative}
 .primary-shelter .hero-nook-b .bug svg,.hero-user-turn .primary-shelter .hero-nook-b .bug svg{animation:none!important;clip-path:none;transform:rotate(90deg)}
 @keyframes button-crawl{from{translate:-24px 0}to{translate:72px 0}}
 @media(prefers-reduced-motion:reduce){.hero-user-turn .primary-shelter .hero-nook-b .bug{animation:none!important;translate:72px 0}}
+
+/* Directed glance for the letter-peek catch; the base logo is unchanged. */
+.system-mascot .mascot-eyes i::after{translate:var(--look-x,0px) var(--look-y,0px);transition:translate .18s ease}

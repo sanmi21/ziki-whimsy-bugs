@@ -57,3 +57,23 @@ git status --short
 ```
 
 GitHub source publication does not deploy the website. Local preview remains `node serve.mjs` at http://127.0.0.1:4175.
+
+## Animation refinements — 2026-10-27
+
+The user authorized publishing the pending animation and visibility corrections on the existing `main` branch. Verification and publication commands:
+
+```powershell
+node --check dist/app.js
+node --check serve.mjs
+node --test checks/interaction.test.mjs
+git diff --check
+git fetch origin main
+git rev-list --left-right --count HEAD...origin/main
+git add README.md dist/app.js dist/styles.css checks/interaction.test.mjs docs/work-log.md docs/push-commands.md docs/clean-emergence-preview.png docs/viewport-emergence-preview.png docs/letter-peek-preview.png
+git diff --cached --check
+git commit -m "Refine bug emergence and add letter-peek catches"
+git push origin main
+git rev-parse HEAD
+git ls-remote origin refs/heads/main
+git status --short
+```

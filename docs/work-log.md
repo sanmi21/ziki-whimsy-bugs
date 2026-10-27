@@ -263,3 +263,37 @@
 
 - Checkpoint — Initial publication: committed the prototype as `a97b1f79fb11b7fe2ce7f9b285c8d2b27bd4fd6c` and successfully pushed `main` to the requested origin. Remote `refs/heads/main` matched local HEAD and the working tree was clean. Removed one trailing-whitespace line found during the staged diff check before committing; no behavior changed.
 - Outcome: prototype source published to GitHub on `main`; website deployment has not been performed. The final handoff documentation is being committed and pushed with the exact commands in [push-commands.md](push-commands.md). All twenty-one regression checks and both syntax checks passed during preparation.
+
+
+## 2026-10-27 — Clean emergence and occasional longer catches
+
+- Objective and starting point: preserve the existing homepage and crawling animations; remove the dark line at emergence and occasionally increase the mascot-to-bug distance.
+- Checkpoint 1 — Investigation: the opaque background-colored pseudo-element at shelter edges became visible over the closing gradient, especially beside words. Local catches always chose a nearby edge.
+- Checkpoint 2 — Implementation: disabled that generated strip in [styles](../dist/styles.css), keeping the clipped crawl and button occlusion. Added a 30% chance to select the farthest visible corner of the same card/section in [script](../dist/app.js), provided it adds over 60 pixels; both catch styles share this origin.
+- Checkpoint 3 — Verification and docs: both JavaScript syntax checks and all 22 regression checks passed, including near/far origin selection and viewport bounds. Browser confirmed the closing heading visitor has no generated edge strip; saved [preview](clean-emergence-preview.png). Updated [README](../README.md) with the actual emergence and catch behavior.
+- Outcome: completed locally for review. No commit, push, or deployment performed. Existing layout, timing, and crawl paths preserved.
+
+
+## 2026-10-27 — Keep emerging visitors in view
+
+- Objective and starting point: section visibility alone could select an offscreen heading/card and start a bug below the viewport. Preserve existing crawl paths, timing, and the previous uncommitted corrections.
+- Checkpoint 1 — Investigation: section visitors are created by the dwell scheduler, then positioned at random shelters. Validate their clipped crawl area before revealing them; retry when no safe area is available.
+- Checkpoint 2 — Implementation: filter offscreen headings/cards and measure the complete clipped crawl shelter before revealing a section visitor, with a 12-pixel viewport margin. Rejected visitors remain hidden, are removed, and retry after a short delay without resetting cooldowns. The button bug and invitation also wait for their shelter to fit onscreen; the automatic introduction now checks the target’s full bounds. Existing movements and layout are unchanged.
+- Checkpoint 3 — Verification and docs: both syntax checks and all 25 regression checks passed. New checks cover viewport edges, hidden rejection/retry, and the button bug waiting for scroll. Corrected an incomplete test mock during verification. Browser measured the closing visitor shelter at x575–633/y230–435 inside an 848×662 viewport; saved [preview](viewport-emergence-preview.png). Updated [README](../README.md).
+- Outcome: completed locally. Users may scroll an already-emerged bug out of view naturally; new visitors will not start offscreen. Previous uncommitted changes are preserved; no commit, push, or deployment performed.
+
+
+## 2026-10-27 — Letter peek and web catch
+
+- Objective and starting point: add a third mascot motion alongside swoop and web drag, without replacing existing behavior or changing the page layout.
+- Checkpoint 1 — Investigation: catches share a fixed mascot overlay, scroll-tracked thread, and cleanup. Measure a visible heading letter with DOM Range; reuse web reeling and local return cleanup, with a rising reveal and directed glance before the thread fires.
+- Checkpoint 2 — Implementation: added a third eligible manual-catch choice, measured visible heading letters without changing text markup, and added an upward clipped reveal, a directed pupil glance, web drag, and retreat behind the same letter. Retained both original motions, the original introduction, reduced-motion instant catches, and scroll tracking. Header stays untouched for letter catches. Updated [script](../dist/app.js) and [styles](../dist/styles.css).
+- Checkpoint 3 — Verification and docs: syntax checks and all 27 regression tests passed, including random selection, the full letter sequence, and cleanup. Browser exercised both original styles. Temporarily selected the letter branch for visual inspection, captured [preview](letter-peek-preview.png), then restored random selection. Confirmed the local server serves the updated script. Updated [README](../README.md).
+- Outcome: completed locally; no commit, push, or deployment. Suitable letters must fit onscreen above the target section; otherwise the two original catch styles remain available.
+
+
+## 2026-10-27 — Publish animation refinements
+
+- Objective: user authorized pushing all pending corrections to the existing `main` branch.
+- Investigation and verification: confirmed the intended origin, preserved the existing branch, fetched `origin/main`, and found no divergence. Both syntax checks, all 27 regression checks, and the diff whitespace check passed. Reviewed the pending source changes; temporary visual-test selection is absent.
+- Publication checkpoint: include clean emergence, occasional longer catches, viewport-gated visitors, the letter-peek catch, tests, README, work log, and three preview images in `Refine bug emergence and add letter-peek catches`. Commit and push are the remaining publication steps; their final result will be reported in chat. The command record is in [push-commands.md](push-commands.md).

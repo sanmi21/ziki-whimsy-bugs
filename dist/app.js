@@ -23,9 +23,16 @@ let introTimer;
 let introCancelled = false;
 let introPending = false;
 let introStarted = false;
+let userTurnPending = false;
 function showTurnHint() {
   const remaining = userBug.classList.contains('caught') ? bugs.find(bug => !bug.classList.contains('caught')) : userBug;
   if (!remaining || introCancelled) return;
+  const shelter = document.querySelector('.primary-shelter > .hero-nook-b');
+  if (shelter && !isVisibleCrawlArea(shelter.getBoundingClientRect(), innerWidth, innerHeight)) {
+    userTurnPending = true;
+    return;
+  }
+  userTurnPending = false;
   document.documentElement.classList.add('hero-user-turn');
   remaining.style.setProperty?.('--legs-play', 'running');
   remaining.append(hint);
@@ -46,7 +53,7 @@ async function runIntroduction() {
   const origin = logo.getBoundingClientRect();
   const target = automaticBug.getBoundingClientRect();
   // Do not chase offscreen when the user has already moved down the page.
-  if (target.top < 0 || target.top >= innerHeight) { introPending = true; return; }
+  if (target.top < 0 || target.top + target.height > innerHeight || target.left < 0 || target.left + target.width > innerWidth) { introPending = true; return; }
   introPending = false;
   introStarted = true;
   await catchBug(automaticBug, { detail: 1, automatic: true });
@@ -56,6 +63,7 @@ async function runIntroduction() {
 if (reducedMotion.matches) showTurnHint();
 else introTimer = setTimeout(runIntroduction, 2700);
 function retryVisibleIntroduction() {
+  if (userTurnPending && !document.hidden) showTurnHint();
   if (!introPending || introCancelled || introStarted) return;
   clearTimeout(introTimer);
   introTimer = setTimeout(runIntroduction, 200);
@@ -90,7 +98,10 @@ theme.addEventListener('click', () => {
   if (prey.classList.contains('visible')) prey.style.color = light ? '#3268a8' : '#8cc3ff';
   document.querySelector('meta[name="theme-color"]').content = light ? '#f5f8ff' : '#0c162e';
 });
-function chooseCatchStyle(random = Math.random) { return random() < .5 ? 'swoop' : 'web'; }
+function chooseCatchStyle(random = Math.random, hasLetter = false) {
+  const choice = random();
+  return hasLetter ? (choice < 1/3 ? 'swoop' : choice < 2/3 ? 'web' : 'letter') : (choice < .5 ? 'swoop' : 'web');
+}
 // Bugs sit in hero whitespace. Only bugs intercept pointer input.
 async function catchBug(bug, event) {
   if (busy || bug.classList.contains('caught')) return;
@@ -102,7 +113,9 @@ async function catchBug(bug, event) {
   const heroMotion = heroMotions.get(bug);
   heroMotion?.travel.pause();
   heroMotion?.turn.pause();
-  const catchStyle = chooseCatchStyle();
+  const letterOrigin = !event.automatic && !reducedMotion.matches ? findLetterCatchOrigin(bug) : null;
+  const catchStyle = chooseCatchStyle(Math.random, Boolean(letterOrigin));
+  const letterCatch = catchStyle === 'letter';
   mascot.dataset.catchStyle = catchStyle;
   if (!event.automatic) {
     introCancelled = true;
@@ -119,14 +132,14 @@ async function catchBug(bug, event) {
   const target = bug.getBoundingClientRect();
   const initialScrollX = scrollX;
   const initialScrollY = scrollY;
-  const localCatch = Boolean(returnSection);
+  const localCatch = Boolean(returnSection) || letterCatch;
   const localShelter = returnSection?.querySelector('.conversation, .steps') || returnSection;
   const origin = (localShelter || logo).getBoundingClientRect();
   const x = target.left + target.width / 2;
   const y = target.top + target.height / 2;
-  const startX = localCatch ? Math.max(origin.left + 22, Math.min(origin.right - 22, x + 60)) : origin.left + origin.width / 2;
-  const localEdgeY = Math.abs(y - origin.top) <= Math.abs(y - origin.bottom) ? origin.top + 4 : origin.bottom - 4;
-  const startY = localCatch ? Math.max(20, Math.min(innerHeight - 20, localEdgeY)) : Math.max(-24, origin.top + origin.height / 2);
+  const localOrigin = letterCatch ? letterOrigin : localCatch ? chooseLocalCatchOrigin(origin, {x,y}, innerWidth, innerHeight) : null;
+  const startX = localCatch ? localOrigin.x : origin.left + origin.width / 2;
+  const startY = localCatch ? localOrigin.y : Math.max(-24, origin.top + origin.height / 2);
   const dx = x - startX;
   const dy = y - startY;
   mascot.style.left = `${startX}px`;
@@ -135,7 +148,7 @@ async function catchBug(bug, event) {
     if (!reducedMotion.matches) {
       if (!localCatch) logo.classList.add('away');
       mascot.classList.add('visible', 'awake');
-      thread.classList.add('visible');
+      if (!letterCatch) thread.classList.add('visible');
       if (catchStyle === 'web') thread.classList.add('shooting');
       prey.style.color = getComputedStyle(bug).color;
       prey.style.left = `${x}px`;
@@ -156,7 +169,22 @@ async function catchBug(bug, event) {
         threadFrame = requestAnimationFrame(followThread);
       };
       followThread();
-      if (catchStyle === 'swoop') {
+      if (letterCatch) {
+        // Reveal upward across the letter's top edge; no opaque masking strip.
+        activeAnimation = mascot.animate([
+          {translate:'0 30px', clipPath:'inset(0 0 100% 0)', scale:'.9'},
+          {translate:'0 -3px', clipPath:'inset(0)', scale:'1', offset:.8},
+          {translate:'0 0', clipPath:'inset(0)', scale:'1'}
+        ], {duration:480, easing:'ease-out', fill:'forwards'});
+        await activeAnimation.finished;
+        activeAnimation.cancel();
+        mascot.style.setProperty?.('--look-x', `${Math.max(-2,Math.min(2,dx/80))}px`);
+        mascot.style.setProperty?.('--look-y', `${Math.max(-1.5,Math.min(1.5,dy/80))}px`);
+        activeAnimation = mascot.animate([{rotate:'0deg'},{rotate:`${Math.max(-8,Math.min(8,dx/35))}deg`}],
+          {duration:320,easing:'ease-in-out',fill:'forwards'});
+        await activeAnimation.finished;
+        thread.classList.add('visible','shooting');
+      } else if (catchStyle === 'swoop') {
         activeAnimation = mascot.animate([
           { translate: '0 0', rotate: '0deg', scale: localCatch ? '0' : '.8' },
           { translate: `${dx * .65}px ${Math.min(24, dy * .04)}px`, rotate: '-10deg', scale: '1', offset: .22 },
@@ -211,7 +239,7 @@ async function catchBug(bug, event) {
       }
       await activeAnimation.finished;
       prey.classList.remove('visible');
-      if (catchStyle === 'web') {
+      if (catchStyle !== 'swoop') {
         puff.classList.add('burst');
         status.classList.add('visible');
       }
@@ -220,7 +248,10 @@ async function catchBug(bug, event) {
         activeAnimation.cancel();
         cancelAnimationFrame(threadFrame);
         thread.classList.remove('visible');
-        activeAnimation = mascot.animate([
+        activeAnimation = mascot.animate(letterCatch ? [
+          {translate:'0 0',clipPath:'inset(0)',scale:'1'},
+          {translate:'0 30px',clipPath:'inset(0 0 100% 0)',scale:'.9'}
+        ] : [
           { translate: '0 0', rotate: '0deg', scale: '.8', opacity: 1, offset: 0 },
           { translate: '0 0', rotate: '-12deg', scale: '.65', opacity: 1, offset: .45 },
           { translate: '0 -10px', rotate: '-20deg', scale: '0', opacity: 0, offset: 1 }
@@ -256,6 +287,8 @@ async function catchBug(bug, event) {
     prey.classList.remove('visible');
     silk.setAttribute('d', '');
     mascot.classList.remove('visible', 'awake');
+    mascot.style.removeProperty?.('--look-x');
+    mascot.style.removeProperty?.('--look-y');
     logo.classList.remove('away');
     homeEyes.classList.remove('awake');
     bug.classList.remove('targeted');
@@ -339,8 +372,8 @@ function finishVisitorRetirement(visitor) {
 
 function placeVisitorShelter(nook, section, preferWord) {
   const bounds = section.getBoundingClientRect();
-  const headings = [...section.querySelectorAll('h2, h3')];
-  const cards = [...section.querySelectorAll('.conversation, .steps article')];
+  const headings = [...section.querySelectorAll('h2, h3')].filter(isVisibleShelter);
+  const cards = [...section.querySelectorAll('.conversation, .steps article')].filter(isVisibleShelter);
   const heading = headings[Math.floor(Math.random() * headings.length)];
   const card = cards[Math.floor(Math.random() * cards.length)];
   if ((preferWord || !card) && heading) {
@@ -385,6 +418,8 @@ function scheduleVisitor() {
     if (busy) { dwellTimer = setTimeout(scheduleVisitor, 2000); return; }
     const nook = document.createElement('div');
     nook.className = 'bug-nook';
+    // Measure while hidden so a rejected shelter never flashes onscreen.
+    nook.style.visibility = 'hidden';
     const bug = document.createElement('button');
     bug.type = 'button';
     bug.className = 'bug section-bug is-crawling';
@@ -405,9 +440,16 @@ function scheduleVisitor() {
     nook.style.setProperty('--travel-angle', drift > 0 ? '160deg' : '200deg');
     nook.style.setProperty('--return-angle', drift > 0 ? '-20deg' : '20deg');
     nook.style.setProperty('--crawl-speed', `${2.6 + Math.random() * 1.4}s`);
+    const visitor = { bug, nook, section };
+    configureVisitorRoute(visitor);
+    if (!isVisibleCrawlArea(nook.getBoundingClientRect(), innerWidth, innerHeight)) {
+      nook.remove();
+      dwellTimer = setTimeout(scheduleVisitor, 1000);
+      return;
+    }
+    nook.style.visibility = '';
     bugs.push(bug);
-    activeVisitor = { bug, nook, section };
-    configureVisitorRoute(activeVisitor);
+    activeVisitor = visitor;
     visitorTimer = setTimeout(retireVisitor, eggTiming.lifetime);
   }, Math.max(100, delay));
 }
@@ -453,4 +495,63 @@ function configureVisitorRoute(visitor) {
     nook.style.top = `${Math.max(4, parseFloat(nook.style.top) - 130)}px`;
     nook.style.setProperty('--crawl-distance', '120px');
   }
+}
+
+
+function chooseLocalCatchOrigin(bounds, target, width, height, random = Math.random) {
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  const near = {
+    x: clamp(Math.max(bounds.left + 22, Math.min(bounds.right - 22, target.x + 60)), 24, width - 24),
+    y: clamp(Math.abs(target.y - bounds.top) <= Math.abs(target.y - bounds.bottom) ? bounds.top + 4 : bounds.bottom - 4, 20, height - 20)
+  };
+  if (random() >= .3) return near;
+  // Occasionally launch from the farthest visible corner of the same card.
+  const corners = [
+    {x:clamp(bounds.left+22,24,width-24),y:clamp(bounds.top+4,20,height-20)},
+    {x:clamp(bounds.right-22,24,width-24),y:clamp(bounds.top+4,20,height-20)},
+    {x:clamp(bounds.left+22,24,width-24),y:clamp(bounds.bottom-4,20,height-20)},
+    {x:clamp(bounds.right-22,24,width-24),y:clamp(bounds.bottom-4,20,height-20)}
+  ];
+  const distance = point => Math.hypot(point.x-target.x,point.y-target.y);
+  corners.sort((a,b)=>distance(b)-distance(a));
+  return distance(corners[0]) > distance(near) + 60 ? corners[0] : near;
+}
+
+// The shelter clips every crawl keyframe, including the return path. Requiring
+// its full area to fit keeps the bug in view without changing its movement.
+function isVisibleCrawlArea(rect, width, height) {
+  const inset = 12;
+  return rect.width > 0 && rect.height > 0 && rect.left >= inset &&
+    rect.top >= inset && rect.right <= width - inset && rect.bottom <= height - inset;
+}
+function isVisibleShelter(element) {
+  const rect = element.getBoundingClientRect();
+  return rect.top >= 12 && rect.bottom <= innerHeight - 12 &&
+    rect.right > 12 && rect.left < innerWidth - 12;
+}
+
+function findLetterCatchOrigin(bug) {
+  if (!document.createTreeWalker) return null;
+  const section = bug.closest?.('section') || document.querySelector('main');
+  if (!section) return null;
+  const target = bug.getBoundingClientRect();
+  const candidates = [];
+  for (const heading of section.querySelectorAll('h1, h2, h3')) {
+    const walker = document.createTreeWalker(heading, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      for (const match of node.textContent.matchAll(/[a-zA-Z](?=\s|[.,?!:]|$)/g)) {
+        const range = document.createRange();
+        range.setStart(node,match.index);
+        range.setEnd(node,match.index+1);
+        const rect = range.getBoundingClientRect();
+        const x = rect.left + rect.width/2, y = rect.top - 21;
+        if (rect.width <= 0 || x < 34 || x > innerWidth-34 || y < 34 || rect.bottom > innerHeight-12) continue;
+        const distance = Math.hypot(x-target.left-target.width/2,y-target.top-target.height/2);
+        if (distance > 65) candidates.push({x,y,distance});
+      }
+    }
+  }
+  candidates.sort((a,b)=>a.distance-b.distance);
+  return candidates.length ? candidates[Math.floor(Math.random()*Math.min(6,candidates.length))] : null;
 }
