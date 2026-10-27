@@ -1,0 +1,364 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { runInNewContext } from 'node:vm';
+
+const source = await readFile(new URL('../dist/app.js', import.meta.url), 'utf8');
+function setup(reduced = true, storage = new Map(), randomValue = .75) {
+  const animations = [];
+  const frames = [];
+  const scrollState = { x: 0, y: 0 };
+  const pendingTimers = [];
+  function element() {
+    const classes = new Set();
+    return {
+      append(child) { this.child = child; },
+      dataset: {}, style: {}, handlers: {}, attrs: {}, disabled: false, textContent: '',
+      classList: {
+        add: (...names) => names.forEach(name => classes.add(name)),
+        remove: (...names) => names.forEach(name => classes.delete(name)),
+        contains: name => classes.has(name),
+        toggle: name => { if (classes.has(name)) { classes.delete(name); return false; } classes.add(name); return true; }
+      },
+      addEventListener(name, handler) { this.handlers[name] = handler; },
+      setAttribute(name, value) { this.attrs[name] = value; },
+      getBoundingClientRect: () => ({ left: 100, top: 200, width: 40, height: 40 }),
+      focus() { document.activeElement = this; },
+      animate(keyframes, options) {
+        let resolve;
+        const animation = { owner: this, keyframes, options, finished: new Promise(done => { resolve = done; }), cancel() {}, finish() { resolve(); } };
+        animations.push(animation);
+        return animation;
+      }
+    };
+  }
+  const bugs = [element(), element(), element()];
+  const nodes = Object.fromEntries(['#web-prey', '#home-eyes', '#silk-thread', '#silk-path', '#bug-hint', '#mascot', '.nav .brand img', '#status', '#puff', '#theme', '.primary', 'meta[name="theme-color"]'].map(key => [key, element()]));
+  const document = { querySelector: key => nodes[key], querySelectorAll: () => bugs, documentElement: element(), body: element() };
+  document.activeElement = document.body;
+  const preferences = { matches: reduced, addEventListener(name, handler) { this.handler = handler; } };
+  const handlers = {};
+  const testApi = runInNewContext(source + ';({scheduleVisitor, setReadingSection: section => { visibleSection = section; visibleSince = Date.now() - 5000; }, sectionEggDelay, retireVisitor, setVisitor: value => { activeVisitor = value; }})', {
+    Math: Object.assign(Object.create(Math), { random: () => randomValue }),
+    getComputedStyle: () => ({ color: '#8cc3ff' }),
+    requestAnimationFrame: callback => { frames.push(callback); return frames.length; },
+    get scrollX() { return scrollState.x; }, get scrollY() { return scrollState.y; }, cancelAnimationFrame() {},
+    document, matchMedia: () => preferences, innerWidth: 390, innerHeight: 800,
+    setTimeout: callback => { pendingTimers.push(callback); return pendingTimers.length; }, clearTimeout() {},
+    addEventListener: (name, handler) => { handlers[name] = handler; }, console,
+    sessionStorage: { getItem: key => storage.get(key), setItem: (key, value) => storage.set(key, value) }
+  });
+  return { frames, scrollState, bugs, nodes, document, animations, preferences, handlers, pendingTimers, sectionDelay: testApi.sectionEggDelay, lifecycle: testApi };
+}
+
+test('reduced motion catches without animation or points and prevents duplicate catches', async () => {
+  const state = setup();
+  await state.bugs[0].handlers.click({ detail: 0 });
+  assert.equal(state.animations.length, 0);
+  assert.equal(state.bugs[0].classList.contains('caught'), true);
+  assert.equal(state.nodes['#status'].textContent, 'Nice catch!');
+  assert.equal(state.bugs[1].disabled, false);
+  await state.bugs[0].handlers.click({ detail: 0 });
+  assert.equal(state.nodes['#status'].textContent, 'Nice catch!');
+  state.pendingTimers.at(-1)();
+  assert.equal(state.nodes['#status'].classList.contains('visible'), false);
+});
+
+test('concurrent clicks do not start two chases; mascot and controls recover', async () => {
+  const state = setup(false);
+  const catchPromise = state.bugs[0].handlers.click({ detail: 1 });
+  await state.bugs[1].handlers.click({ detail: 1 });
+  assert.equal(state.animations.length, 1);
+  assert.equal(state.nodes['#mascot'].classList.contains('awake'), true);
+  assert.equal(state.nodes['.nav .brand img'].classList.contains('away'), true);
+  assert.equal(state.nodes['#silk-thread'].classList.contains('visible'), true);
+  state.animations[0].finish();
+  await new Promise(setImmediate);
+  assert.equal(state.bugs[0].classList.contains('caught'), true);
+  assert.equal(state.animations.length, 2);
+  assert.equal(state.nodes['#web-prey'].classList.contains('visible'), true);
+  state.animations[1].finish();
+  await new Promise(setImmediate);
+  assert.equal(state.nodes['.nav .brand img'].classList.contains('away'), false);
+  assert.equal(state.nodes['#home-eyes'].classList.contains('awake'), true);
+  state.animations[2].finish();
+  await catchPromise;
+  assert.equal(state.nodes['#web-prey'].classList.contains('visible'), false);
+  assert.equal(state.nodes['#home-eyes'].classList.contains('awake'), false);
+  assert.equal(state.nodes['#mascot'].classList.contains('visible'), false);
+  assert.equal(state.nodes['#mascot'].classList.contains('awake'), false);
+  assert.equal(state.nodes['#silk-thread'].classList.contains('visible'), false);
+  assert.equal(state.bugs[1].disabled, false);
+});
+
+test('original theme control toggles light and dark labels', () => {
+  const state = setup();
+  const control = state.nodes['#theme'];
+  control.handlers.click();
+  assert.equal(control.attrs['aria-label'], 'Switch to dark mode');
+  assert.equal(state.document.documentElement.classList.contains('light'), true);
+  control.handlers.click();
+  assert.equal(control.attrs['aria-label'], 'Switch to light mode');
+});
+
+test('discovery hint dismisses after a catch and returns on reload', async () => {
+  const storage = new Map();
+  const state = setup(true, storage);
+  assert.equal(state.document.documentElement.classList.contains('introducing-bugs'), true);
+  await state.bugs[0].handlers.click({ detail: 0 });
+  assert.equal(state.document.documentElement.classList.contains('introducing-bugs'), false);
+  assert.equal(setup(true, storage).document.documentElement.classList.contains('introducing-bugs'), true);
+});
+
+test('Escape hides cues and focus on another bug makes its tooltip available', () => {
+  const state = setup();
+  state.handlers.keydown({ key: 'Escape' });
+  assert.equal(state.document.documentElement.classList.contains('introducing-bugs'), false);
+  assert.equal(state.document.documentElement.classList.contains('hide-bug-tooltips'), true);
+  state.bugs[1].handlers.focus();
+  assert.equal(state.document.documentElement.classList.contains('hide-bug-tooltips'), false);
+});
+
+test('automatic introduction catches only one bug, then prompts beside a survivor', async () => {
+  const storage = new Map();
+  const state = setup(false, storage);
+  const introduction = state.pendingTimers[0]();
+  assert.equal(state.animations.length, 1);
+  state.animations[0].finish();
+  await new Promise(setImmediate);
+  state.animations[1].finish();
+  await new Promise(setImmediate);
+  assert.equal(state.nodes['.nav .brand img'].classList.contains('away'), false);
+  assert.equal(state.nodes['#home-eyes'].classList.contains('awake'), true);
+  state.animations[2].finish();
+  await introduction;
+  assert.equal(state.bugs.filter(bug => bug.classList.contains('caught')).length, 1);
+  assert.equal(state.bugs[1].child, state.nodes['#bug-hint']);
+  assert.equal(state.nodes['#status'].classList.contains('visible'), false);
+  assert.equal(state.nodes['#bug-hint'].textContent, 'Your turn. Click or tap a bug to squash it.');
+  assert.equal(state.document.activeElement, state.document.body);
+  assert.equal(setup(false, storage).pendingTimers.length, 1);
+});
+
+test('reduced motion shows the prompt without an automatic catch', () => {
+  const state = setup(true);
+  assert.equal(state.animations.length, 0);
+  assert.equal(state.bugs.some(bug => bug.classList.contains('caught')), false);
+  assert.equal(state.nodes['#bug-hint'].textContent, 'Your turn. Click or tap a bug to squash it.');
+});
+
+test('manual catching before the introduction prevents a second automatic chase', async () => {
+  const state = setup(false);
+  const introTimer = state.pendingTimers[0];
+  const manual = state.bugs[1].handlers.click({ detail: 1 });
+  await introTimer();
+  assert.equal(state.animations.length, 1);
+  state.animations[0].finish();
+  await new Promise(setImmediate);
+  state.animations[1].finish();
+  await new Promise(setImmediate);
+  assert.equal(state.nodes['.nav .brand img'].classList.contains('away'), false);
+  assert.equal(state.nodes['#home-eyes'].classList.contains('awake'), true);
+  state.animations[2].finish();
+  await manual;
+  assert.equal(state.bugs[0].classList.contains('caught'), false);
+  assert.equal(state.document.documentElement.classList.contains('introducing-bugs'), false);
+});
+
+
+test('section visitors require dwell time and both cooldowns', () => {
+  const { sectionDelay } = setup();
+  assert.equal(sectionDelay(100000, 100000, -Infinity, -Infinity), 4000);
+  assert.equal(sectionDelay(120000, 100000, -Infinity, -Infinity), 0);
+  assert.equal(sectionDelay(120000, 100000, 110000, -Infinity), 5000);
+  assert.equal(sectionDelay(120000, 100000, 110000, 110000), 5000);
+  assert.equal(sectionDelay(240000, 220000, 110000, 110000), 0);
+});
+
+
+test('ignored visitor retreats before removal; repeated retirement does not restart it', () => {
+  const state = setup(false);
+  const bug = state.nodes['#mascot'];
+  let removed = false;
+  state.lifecycle.setVisitor({ bug, nook: { remove() { removed = true; } }, section: {} });
+  state.lifecycle.retireVisitor();
+  assert.equal(removed, false);
+  assert.equal(bug.classList.contains('retreating'), true);
+  const timers = state.pendingTimers.length;
+  state.lifecycle.retireVisitor();
+  assert.equal(state.pendingTimers.length, timers);
+  state.pendingTimers.at(-1)();
+  assert.equal(removed, true);
+});
+
+test('caught visitor is removed directly without a retreat animation', () => {
+  const state = setup(false);
+  const bug = state.nodes['#mascot'];
+  bug.classList.add('caught');
+  let removed = false;
+  state.lifecycle.setVisitor({ bug, nook: { remove() { removed = true; } }, section: {} });
+  state.lifecycle.retireVisitor();
+  assert.equal(removed, true);
+  assert.equal(bug.classList.contains('retreating'), false);
+});
+
+
+test('scrolling adjusts the active path without finishing the catch', async () => {
+  const state = setup(false);
+  const catching = state.bugs[0].handlers.click({ detail: 1 });
+  state.scrollState.y = 120;
+  state.scrollState.x = 10;
+  state.frames.at(-1)();
+  assert.equal(state.nodes['#mascot'].style.top, '100px');
+  assert.equal(state.nodes['#mascot'].style.left, '110px');
+  assert.equal(state.bugs[0].classList.contains('caught'), false);
+  state.handlers.scroll();
+  assert.equal(state.bugs[0].classList.contains('caught'), false);
+  state.animations[0].finish();
+  await new Promise(setImmediate);
+  assert.equal(state.nodes['#puff'].style.top, '220px');
+  state.animations[1].finish();
+  await new Promise(setImmediate);
+  state.animations[2].finish();
+  await catching;
+  assert.equal(state.nodes['#mascot'].classList.contains('visible'), false);
+});
+
+
+test('section catches originate locally and leave the header logo in place', async () => {
+  const state = setup(false);
+  const bug = state.bugs[0];
+  bug.dataset.sectionEgg = 'true';
+  const card = { getBoundingClientRect: () => ({ left: 300, top: 400, right: 600, bottom: 700, width: 300, height: 300 }) };
+  const section = { querySelector: () => card };
+  let retired = false;
+  state.lifecycle.setVisitor({ bug, section, nook: { remove() { retired = true; } } });
+  const catching = bug.handlers.click({ detail: 1 });
+  assert.equal(state.nodes['#mascot'].style.top, '404px');
+  assert.equal(state.nodes['.nav .brand img'].classList.contains('away'), false);
+  state.animations[0].finish();
+  await new Promise(setImmediate);
+  state.animations[1].finish();
+  await new Promise(setImmediate);
+  assert.equal(state.nodes['#home-eyes'].classList.contains('awake'), false);
+  state.animations[2].finish();
+  await catching;
+  assert.equal(retired, true);
+  assert.equal(state.nodes['#mascot'].classList.contains('visible'), false);
+});
+
+
+test('swoop selection moves Ziki out and back without a dragged bug', async () => {
+  const state = setup(false, new Map(), .1);
+  const catching = state.bugs[0].handlers.click({ detail: 1 });
+  assert.equal(state.nodes['#mascot'].dataset.catchStyle, 'swoop');
+  assert.equal(state.animations[0].options.duration, 1050);
+  assert.equal(state.nodes['#silk-thread'].classList.contains('shooting'), false);
+  state.animations[0].finish();
+  await new Promise(setImmediate);
+  assert.equal(state.animations[1].owner, state.nodes['#mascot']);
+  assert.equal(state.nodes['#web-prey'].classList.contains('visible'), false);
+  state.animations[1].finish();
+  await new Promise(setImmediate);
+  state.animations[2].finish();
+  await catching;
+  assert.equal(state.nodes['#mascot'].classList.contains('visible'), false);
+});
+
+test('web selection reels the bug while Ziki stays at its origin', async () => {
+  const state = setup(false, new Map(), .9);
+  const catching = state.bugs[0].handlers.click({ detail: 1 });
+  assert.equal(state.nodes['#mascot'].dataset.catchStyle, 'web');
+  assert.equal(state.nodes['#silk-thread'].classList.contains('shooting'), true);
+  state.animations[0].finish();
+  await new Promise(setImmediate);
+  assert.equal(state.animations[1].owner, state.nodes['#web-prey']);
+  state.animations[1].finish();
+  await new Promise(setImmediate);
+  state.animations[2].finish();
+  await catching;
+  assert.equal(state.nodes['#web-prey'].classList.contains('visible'), false);
+});
+
+
+test('pointer press catches immediately without waiting for a click or crawl completion', () => {
+  const state = setup(true);
+  const bug = state.bugs[0];
+  bug.classList.add('is-crawling');
+  let prevented = false;
+  bug.handlers.pointerdown({ button: 0, preventDefault() { prevented = true; } });
+  assert.equal(prevented, true);
+  assert.equal(bug.classList.contains('caught'), true);
+  const other = state.bugs[1];
+  other.handlers.pointerdown({ button: 2, preventDefault() { throw Error('right click should be ignored'); } });
+  assert.equal(other.classList.contains('caught'), false);
+});
+
+test('a retreating visitor can be caught before its removal timer', async () => {
+  const state = setup(true);
+  const bug = state.bugs[0];
+  bug.dataset.sectionEgg = 'true';
+  bug.classList.add('retreating');
+  let removed = false;
+  const section = { querySelector: () => null, getBoundingClientRect: () => ({left:0,top:0,right:300,bottom:500,width:300,height:500}) };
+  state.lifecycle.setVisitor({bug, section, retreating:true,nook:{remove(){removed=true;}}});
+  await bug.handlers.click({detail:1});
+  assert.equal(bug.classList.contains('caught'),true);
+  assert.equal(removed,true);
+});
+
+
+test('old session flags do not suppress the introduction on reload', () => {
+  const storage = new Map([['ziki-bug-intro-shown','true'],['ziki-bugs-discovered','true']]);
+  assert.equal(setup(false,storage).pendingTimers.length,1);
+  assert.equal(setup(false,storage).pendingTimers.length,1);
+});
+
+test('section appearances are scheduled even when the first bug is ignored', () => {
+  const state = setup(false);
+  assert.equal(state.bugs[0].classList.contains('caught'),false);
+  const before = state.pendingTimers.length;
+  state.lifecycle.setReadingSection({});
+  state.lifecycle.scheduleVisitor();
+  assert.equal(state.pendingTimers.length,before+1);
+  assert.equal(state.bugs[0].classList.contains('caught'),false);
+});
+
+
+test('offscreen introduction retries once the bug becomes visible', async () => {
+  const state = setup(false);
+  const bug = state.bugs[0];
+  bug.getBoundingClientRect = () => ({left:100,top:900,width:40,height:40});
+  await state.pendingTimers[0]();
+  assert.equal(state.animations.length,0);
+  bug.getBoundingClientRect = () => ({left:100,top:200,width:40,height:40});
+  state.handlers.scroll();
+  const introduction = state.pendingTimers.at(-1)();
+  assert.equal(state.animations.length,1);
+  state.animations[0].finish();
+  await new Promise(setImmediate);
+  state.animations[1].finish();
+  await new Promise(setImmediate);
+  state.animations[2].finish();
+  await introduction;
+  assert.equal(bug.classList.contains('caught'),true);
+  const timers = state.pendingTimers.length;
+  state.handlers.scroll();
+  assert.equal(state.pendingTimers.length,timers);
+});
+
+
+test('visible intro still runs when reload restores the header above the viewport', async () => {
+  const state = setup(false);
+  state.nodes['.nav .brand img'].getBoundingClientRect = () => ({left:30,top:-100,width:35,height:35});
+  const intro = state.pendingTimers[0]();
+  assert.equal(state.animations.length,1);
+  assert.equal(state.nodes['#mascot'].style.top,'-24px');
+  state.animations[0].finish();
+  await new Promise(setImmediate);
+  state.animations[1].finish();
+  await new Promise(setImmediate);
+  state.animations[2].finish();
+  await intro;
+  assert.equal(state.bugs[0].classList.contains('caught'),true);
+});

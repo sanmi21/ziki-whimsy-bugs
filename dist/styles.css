@@ -1,0 +1,285 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;650;700;750;800&display=swap');
+:root{color-scheme:dark;--bg:#0c162e;--panel:#101e39;--border:#26334c;--text:#f3f6ff;--muted:#9eacc6;--blue:#3477f6}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:100px}body{margin:0;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px}a{color:inherit;text-decoration:none}button{font:inherit}a,button{-webkit-tap-highlight-color:transparent}button,a{touch-action:manipulation}:focus-visible{outline:3px solid #a5cdff;outline-offset:6px}button{cursor:pointer}button:disabled{cursor:default}.skip{position:fixed;top:-80px;background:#fff;color:#111;padding:12px;z-index:100}.skip:focus{top:10px}.nav{position:relative;z-index:5;margin:16px auto 0;width:calc(100% - 32px);max-width:1480px;min-height:74px;border:1px solid var(--border);border-radius:50px;display:flex;align-items:center;justify-content:space-between;padding:10px 25px;background:#0d1830}.brand{display:flex;align-items:center;gap:10px;font-family:Manrope,sans-serif;font-size:25px;font-weight:800;letter-spacing:-1px}.nav nav{display:flex;gap:35px;font-size:13px;font-weight:700;color:#bbc7dc}.nav nav a:hover,.text-link:hover{color:#8cbdff}.button{display:inline-flex;align-items:center;justify-content:center;gap:25px;background:#2d6be5;border-radius:40px;padding:18px 27px;font-weight:700;font-size:14px;box-shadow:0 8px 40px #245ae62b;transition:background .2s,transform .2s}.button:hover{background:#4689ff;transform:translateY(-2px)}.nav-cta{padding:14px 22px;font-size:12px}.hero{max-width:1320px;margin:auto;position:relative;padding:0 50px;isolation:isolate}.grid{position:absolute;inset:28px 0 0;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(16.666% - 1px),#7c9bc110 16.666%);z-index:-1;mask-image:linear-gradient(#000, #000 70%,transparent)}.hero-meta{display:flex;justify-content:space-between;padding-top:47px;font-size:9px;font-weight:700;letter-spacing:1.5px;color:#a4b6d4}.hero-meta a{letter-spacing:0;border-bottom:1px solid #73839b;padding-bottom:4px;color:#d8e6ff}.hero-copy{text-align:center;padding:83px 0 0}.eyebrow{font-size:10px;font-weight:700;letter-spacing:1.8px;color:#a2b4d3;margin:0 0 22px}h1{margin:0;font-family:Manrope,sans-serif;font-weight:750;letter-spacing:-2.6px;line-height:1.12}h1>span{display:block}.headline-top,.headline-bottom{font-size:43px}.forward{font-size:118px;letter-spacing:-8px;position:relative;display:flex;align-items:center;justify-content:center;line-height:1.16}.forward sup{font-family:Arial;font-size:26px;display:inline-grid;place-items:center;border-radius:50%;background:#5899ff;width:39px;height:39px;align-self:flex-start;margin-top:7px;letter-spacing:0;margin-left:-1px}.letter-o{display:inline-flex;align-items:center;width:107px;height:68px;border:2px solid #4e8eff;border-radius:40px;margin:13px 7px 0 5px;font-size:0;box-shadow:0 0 0 7px #2f6cef12,inset 0 0 22px #3477f62a}.letter-o span{width:53px;height:53px;background:linear-gradient(140deg,#b8d9ff,#3c72ed);border:2px solid #bbd8ff;border-radius:50%;margin-left:5px;box-shadow:0 0 20px #4c83f477;animation:toggle 6s ease-in-out infinite}.intro{color:var(--muted);font-size:14px;line-height:1.8;max-width:605px;margin:25px auto}.primary{margin-top:4px}.text-link{display:table;border-bottom:1px solid #7d8ba4;padding-bottom:3px;font-size:12px;font-weight:700}.hero-copy>.text-link{margin:18px auto 0}.workflow-strip{text-align:center;padding:46px 0 60px}.workflow-strip>span{font-size:8px;letter-spacing:2px;color:#768cae}.workflow-strip>div{display:flex;justify-content:center;gap:30px;margin-top:20px;color:#c4d1e8;font-size:13px;font-weight:500}.workflow-strip i{font-style:normal;color:#4676b7}.section{max-width:1160px;margin:auto;padding:90px 30px;border-top:1px solid #26334c80}h2{font:650 40px/1.2 Manrope,sans-serif;letter-spacing:-1.5px;margin:0 0 20px}h2 span{color:#9baecc}.section-intro{font-size:14px;line-height:1.8;color:var(--muted);max-width:520px}.steps{display:grid;grid-template-columns:repeat(6,1fr);margin-top:45px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}.steps article{padding:25px 18px;border-right:1px solid var(--border)}.steps article:first-child{padding-left:0}.steps article:last-child{border:0}.step-number{font:12px monospace;color:#7791b8;display:flex;justify-content:space-between}.step-number i{font-style:normal;color:#77a9ff}h3{font:650 18px Manrope,sans-serif;margin:25px 0 12px}.steps p{font-size:12px;line-height:1.8;color:var(--muted);min-height:110px}.steps code{font-size:9px;color:#81b6ff;white-space:nowrap}.agents{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:70px}.agents .text-link{margin-top:25px}.conversation{padding:24px;border:1px solid var(--border);border-radius:15px;background:#101d36}.conversation-label{font-size:8px;letter-spacing:1px;color:#93a9cb;display:flex;align-items:center;gap:7px}.chat{padding:20px;margin-top:22px;border:1px solid #2d4263;border-radius:12px}.chat>span{font-size:9px;letter-spacing:1px;color:#b6c7e3;display:flex;gap:6px;align-items:center}.chat p{font-size:13px;line-height:1.6;margin:9px 0 0}.chat.human{margin-right:40px;background:#1a2b46}.chat.agent{margin-left:40px;background:#142c54;border-color:#2e5592}.human-gate{text-align:center;color:#8bb9fb;font-size:10px;margin-top:24px}.closing{max-width:1160px;margin:0 auto 65px;padding:65px 25px;text-align:center;border:1px solid var(--border);border-radius:18px;background:radial-gradient(ellipse at 50% 100%,#15376e66,transparent 70%)}.closing h2{font-size:48px}.closing p:not(.eyebrow){color:var(--muted);font-size:13px;line-height:1.8}.closing .text-link{margin:25px auto 0}footer{max-width:1160px;margin:auto;border-top:1px solid var(--border);padding:28px 0;display:flex;justify-content:space-between;align-items:center;color:#8194b3;font-size:11px}footer .brand{color:#e8f0ff;font-size:22px}footer>a:last-child{color:#b9cdec}.svg-defs{position:absolute;width:0;height:0;overflow:hidden}.paused *{animation-play-state:paused!important}.paused{scroll-behavior:auto}
+@keyframes toggle{0%,35%,100%{transform:translateX(0)}50%,85%{transform:translateX(38px)}}@keyframes wander{0%,100%{translate:0 0;rotate:-8deg}35%{translate:17px -9px;rotate:10deg}70%{translate:-12px 10px;rotate:-3deg}}@keyframes mascot-idle{0%,100%{translate:0 0;rotate:-5deg}50%{translate:0 -8px;rotate:4deg}}@keyframes puff{0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(0)}30%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.7) rotate(90deg)}}
+@media(min-width:1500px){.hero-copy{padding-top:105px}.hero{max-width:1400px}.forward{font-size:135px}.headline-top,.headline-bottom{font-size:48px}}
+@media(max-width:950px){.nav nav{gap:18px}.hero{padding:0 30px}.steps{grid-template-columns:repeat(3,1fr)}.steps article:nth-child(3){border:0}.steps article:nth-child(-n+3){border-bottom:1px solid var(--border)}.steps article:first-child{padding-left:18px}.steps p{min-height:65px}.agents{gap:30px}footer{margin:0 25px}.closing{margin:0 25px 45px}}
+@media(max-width:640px){.nav{padding:12px 16px;min-height:62px;margin-top:10px}.brand{font-size:22px;gap:6px}.nav nav{display:none}.nav-cta{font-size:10px;padding:12px 15px;gap:12px}.hero{padding:0 18px}.hero-meta{padding-top:30px;font-size:7px;letter-spacing:.8px}.hero-copy{padding-top:60px}.eyebrow{font-size:8px;letter-spacing:1.2px;margin-bottom:18px}.headline-top,.headline-bottom{font-size:28px;letter-spacing:-1.5px}.forward{font-size:74px;letter-spacing:-5px}.forward sup{width:24px;height:24px;font-size:18px}.letter-o{width:64px;height:43px;margin:9px 4px 0 3px}.letter-o span{width:32px;height:32px;margin-left:3px}.intro{font-size:12px;max-width:330px;margin:23px auto;line-height:1.8}.primary{font-size:12px;padding:17px 22px;gap:15px}.bug{width:48px;height:58px}.bug svg{width:44px;height:44px}.bug-a{left:42%;top:3%}.bug-b{right:6%;top:21%}.bug-c{left:64%;top:77%}.workflow-strip{padding:34px 0 44px}.workflow-strip>div{gap:12px;font-size:10px}.section{padding:55px 22px}h2{font-size:29px;letter-spacing:-1px}.section-intro{font-size:12px}.steps{grid-template-columns:repeat(2,1fr);margin-top:30px}.steps article:nth-child(3){border-right:1px solid var(--border)}.steps article:nth-child(2n){border-right:0}.steps article:nth-child(-n+4){border-bottom:1px solid var(--border)}.steps p{font-size:11px;min-height:65px}.steps article{padding:20px 13px}.steps article:first-child{padding-left:13px}.steps code{font-size:8px}.agents{grid-template-columns:1fr;gap:25px}.conversation{padding:20px}.closing{padding:45px 18px;margin:0 18px 35px}.closing h2{font-size:36px}.closing p:not(.eyebrow){font-size:11px}footer{margin:0 20px;padding:25px 0;flex-wrap:wrap;gap:20px}footer>span{order:3;width:100%;font-size:10px}@keyframes toggle{0%,35%,100%{transform:translateX(0)}50%,85%{transform:translateX(21px)}}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* Ambient interaction occupies existing hero whitespace, without layout space. */
+.ambient-bugs{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden}
+.bug{position:absolute;pointer-events:auto;background:none;border:0;padding:0;width:48px;height:48px;color:#8cc3ff;animation:ambient-wander 4.8s ease-in-out 1 both;filter:drop-shadow(0 4px 8px #0003);transition:opacity .18s}
+.bug svg{width:44px;height:44px;transition:transform .2s}.bug:hover svg,.bug:focus-visible svg{transform:scale(1.12) rotate(-8deg)}
+.bug-a{left:5%;top:32%;rotate:-18deg}.bug-b{right:4%;top:47%;color:#f1bb9b;rotate:16deg}.bug-c{left:15%;top:77%;color:#b2a1f2;rotate:-8deg}
+.bug-name{position:absolute;left:50%;bottom:-14px;transform:translateX(-50%);font-size:9px;color:var(--muted);opacity:0;white-space:nowrap;transition:opacity .2s}.bug:hover .bug-name,.bug:focus-visible .bug-name{opacity:1}.bug.caught{visibility:hidden;opacity:0}.bug.targeted{animation-play-state:paused;filter:none}
+.system-mascot{position:fixed;z-index:30;pointer-events:none;width:42px;height:42px;transform:translate(-50%,-50%);opacity:0;filter:none}.system-mascot img{width:100%;height:100%}.system-mascot.visible{opacity:1}
+.system-puff{position:fixed;pointer-events:none;z-index:31;color:#bedaff;font-size:40px;opacity:0;transform:translate(-50%,-50%)}.system-puff.burst{animation:puff .6s ease-out}
+.system-compliment{position:fixed;pointer-events:none;z-index:32;transform:translateX(-50%);color:#b7d6ff;font-size:11px;opacity:0;transition:opacity .2s;text-shadow:0 1px 5px #0c162e}.system-compliment.visible{opacity:1}
+.theme-toggle{background:#203c70;color:#f5f8ff;border:1px solid #335389;border-radius:25px;width:49px;height:32px;font-size:23px;line-height:1;flex-shrink:0;margin-left:16px}
+.nav{gap:16px}.nav nav{gap:27px}.nav-cta{white-space:nowrap}.hero-copy{padding-bottom:55px}.workflow-strip{padding:40px 0 60px}.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#83b3ff;box-shadow:0 0 12px #448bff}
+.roles{font-size:11px;line-height:1.8;color:#a9bcda}.event-stream p{font-size:12px;border-bottom:1px solid var(--border);padding:12px 0;margin:0}.event-stream code{color:#94bdff;font-size:11px}.event-stream time{color:#7893bd;margin-right:13px;font-size:10px}.event-stream small,.rewards small{display:block;color:var(--muted);font-size:11px;margin-top:7px}.event-stream small{padding-left:64px}.conversation-label span{margin-left:auto}.rewards h3{margin-top:0}.rewards>div{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:20px 0;border-bottom:1px solid var(--border);font-size:13px}.rewards strong{color:#94bdff;font-size:12px;white-space:nowrap}
+.light{color-scheme:light;--bg:#f5f8ff;--panel:#edf3ff;--border:#d4ddec;--text:#14264a;--muted:#536583}.light .nav{background:#f5f8ff}.light .nav nav{color:#405779}.light .button{color:white}.light .hero-meta,.light .eyebrow{color:#536b91}.light .hero-meta a{color:#304f7e}.light .conversation{background:#edf3ff}.light .chat.human{background:#e0e9f7}.light .chat.agent{background:#d7e7ff}.light .chat>span,.light .workflow-strip>div{color:#37547d}.light .closing{background:radial-gradient(ellipse at 50% 100%,#c9ddff,transparent 70%)}.light .system-compliment{color:#2658a4;text-shadow:0 1px 5px white}.light footer .brand{color:#14264a}.light h2 span{color:#617aa0}.light .bug{filter:none}
+@keyframes ambient-wander{0%{translate:0 0;rotate:0deg}30%{translate:12px -13px;rotate:9deg}65%{translate:-5px 9px;rotate:-7deg}100%{translate:4px 0;rotate:0deg}}
+@media(max-width:1100px){.nav nav{gap:17px;font-size:11px}.nav{padding:10px 20px;gap:10px}.nav-cta{padding:13px 18px}.theme-toggle{margin-left:0}}
+@media(max-width:800px){.nav nav{gap:12px}.nav nav a:last-child{max-width:65px}.nav .brand{font-size:22px}.nav-cta{font-size:11px;padding:12px 15px}.bug-a{left:3%;top:28%}.bug-b{right:3%;top:52%}.bug-c{left:8%;top:78%}}
+@media(max-width:640px){.hero-copy{padding-bottom:25px}.nav{gap:10px}.nav-cta{margin-left:auto}.theme-toggle{width:37px;height:28px;font-size:20px}.bug{width:40px;height:40px}.bug svg{width:36px;height:36px}.bug-a{left:3%;top:15%}.bug-b{right:2%;top:24%}.bug-c{left:2%;top:72%}.bug-name{display:none}.system-mascot{width:34px;height:34px}.system-compliment{font-size:10px}.workflow-strip{padding:34px 0 44px}.roles{font-size:10px}.event-stream small{padding-left:0}}
+@media(prefers-reduced-motion:reduce){.bug,.system-puff.burst{animation:none!important}.system-compliment{transition:none}}
+
+/* Small discovery cues belong to the bugs, without adding a panel or CTA. */
+.bug:is(:hover,:focus-visible){animation-play-state:paused}
+.bug,.bug-b,.bug-c{rotate:0deg}
+@keyframes ambient-wander{0%{translate:0 0}30%{translate:12px -13px}65%{translate:-5px 9px}100%{translate:4px 0}}
+
+
+.bug-name,.discovery-hint{display:block;position:absolute;left:0;bottom:calc(100% + 8px);width:145px;padding:8px 10px;border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--text);font-size:10px;line-height:1.5;text-align:left;white-space:normal;transform:none;rotate:18deg;transform-origin:bottom left;box-shadow:0 4px 15px #0002;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .18s}
+.bug-b .bug-name{left:auto;right:0;rotate:-16deg;transform-origin:bottom right}
+.bug-c .bug-name{rotate:8deg}
+.bug-name,.bug-b .bug-name,.bug-c .bug-name,.discovery-hint{rotate:0deg}
+.discovery-hint{width:138px;font-size:10px;color:var(--muted)}
+.introducing-bugs .discovery-hint{opacity:1;visibility:visible}
+.bug:is(:hover,:focus-visible) .bug-name{opacity:1;visibility:visible;pointer-events:auto}
+.bug:is(:hover,:focus-visible) .discovery-hint,.hide-bug-tooltips .bug-name,.bug.targeted .bug-name,.bug.targeted .discovery-hint{opacity:0;visibility:hidden;pointer-events:none}
+@media(hover:none){.bug-name{display:none}}
+@media(prefers-reduced-motion:reduce){.bug-name,.discovery-hint{transition:none}}
+
+/* Inky little pests, with Ziki-friendly accents and plain insect eyes. */
+.bug svg{width:48px;height:48px;transform:rotate(-18deg)}
+.bug-b svg{transform:rotate(55deg)}
+.bug-c svg{transform:rotate(-55deg)}
+.bug:hover svg,.bug:focus-visible svg{transform:rotate(-25deg) scale(1.12)}
+.bug-b:hover svg,.bug-b:focus-visible svg{transform:rotate(42deg) scale(1.12)}
+.bug-c:hover svg,.bug-c:focus-visible svg{transform:rotate(-42deg) scale(1.12)}
+@media(max-width:640px){.bug svg{width:40px;height:40px}}
+.bug-b .discovery-hint{left:auto;right:0;width:160px}
+
+/* Silk-like swoop, with eyes visible only while Ziki is catching a bug. */
+.silk-thread{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:29;opacity:0;overflow:visible}
+.silk-thread.visible{opacity:1}
+.silk-thread path{fill:none;stroke:#91abc8;stroke-opacity:.55;stroke-width:1;stroke-linecap:round}
+.mascot-eyes{position:absolute;top:25%;left:35%;display:flex;gap:3px;opacity:0}
+.mascot-eyes i{display:block;position:relative;width:8px;height:9px;background:#f1f4f8;border-radius:50%}
+.mascot-eyes i::after{content:'';position:absolute;width:4px;height:4px;left:2px;bottom:1px;background:#101b2e;border-radius:50%}
+.system-mascot.awake .mascot-eyes{opacity:1}
+@media(max-width:640px){.mascot-eyes{gap:2px}.mascot-eyes i{width:6px;height:7px}.mascot-eyes i::after{width:3px;height:3px;left:1.5px}}
+
+.brand-mark{position:relative;display:block;width:35px;height:35px;flex-shrink:0}
+.brand-mark img{display:block}.brand-mark img.away{visibility:hidden}
+.home-eyes{pointer-events:none;top:25%;left:35%;transform-origin:center;gap:2px}
+.home-eyes i{width:6px;height:7px}.home-eyes i::after{width:3px;height:3px;left:1.5px}
+.home-eyes.awake{opacity:1}
+
+/* Occasional visitors emerge under a section's top edge, clear of its copy. */
+main>.section,main>.closing{position:relative}
+.bug-nook{position:absolute;top:1px;right:18px;width:55px;height:58px;overflow:hidden;z-index:2;pointer-events:none}
+.bug-nook::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--bg);z-index:3}
+.bug.section-bug{left:4px;top:4px;color:#8caac9;pointer-events:auto;animation:peek-out 1.8s ease-out both;filter:none}
+@keyframes peek-out{from{translate:0 -48px}to{translate:0 0}}
+@media(prefers-reduced-motion:reduce){.bug.section-bug{animation:none}}
+
+/* Crawl out from shelter, pause, turn, then crawl back beneath the same edge. */
+.bug.section-bug{animation:crawl-in 1.8s linear both;--legs-play:paused}
+.bug.section-bug.is-crawling{--legs-play:running}
+.section-bug svg,.section-bug:hover svg,.section-bug:focus-visible svg{transform:rotate(180deg);transition:transform .2s}
+.bug.section-bug.retreating{animation:crawl-out 1.6s .2s linear both}
+.section-bug.retreating svg{transform:rotate(0deg)}
+.leg-a,.leg-b{transform-box:fill-box;transform-origin:center;animation:leg-step .22s ease-in-out infinite alternate;animation-play-state:var(--legs-play,paused)}
+.leg-b{animation-delay:-.22s}
+.bug:hover,.bug:focus-visible,.bug.targeted{--legs-play:paused!important}
+@keyframes leg-step{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+@keyframes crawl-in{0%{translate:0 -53px}35%{translate:1px -34px}70%{translate:-1px -15px}100%{translate:0 0}}
+@keyframes crawl-out{0%{translate:0 0}35%{translate:1px -17px}70%{translate:-1px -36px}100%{translate:0 -58px}}
+@media(prefers-reduced-motion:reduce){.bug.section-bug,.bug.section-bug.retreating,.leg-a,.leg-b{animation:none!important}}
+
+.bug.section-bug.retreating{animation-play-state:running!important}
+
+/* Catch feedback stays attached to its document location while scrolling. */
+.system-puff,.system-compliment{position:absolute}
+
+/* Smaller artwork, while the hero bugs retain their generous click targets. */
+.bug svg{width:36px;height:36px;display:block;margin:6px}
+.bug-nook{width:42px;height:44px}
+.bug.section-bug{width:36px;height:36px;left:2px;top:3px}
+.bug.section-bug svg{width:32px;height:32px;margin:2px}
+.word-nook::before{top:0;bottom:0;right:auto;width:2px;height:auto}
+.word-nook .section-bug{animation-name:word-crawl-in}
+.word-nook .section-bug svg,.word-nook .section-bug:hover svg,.word-nook .section-bug:focus-visible svg{transform:rotate(90deg)}
+.word-nook .section-bug.retreating{animation-name:word-crawl-out}
+.word-nook .section-bug.retreating svg{transform:rotate(270deg)}
+@keyframes word-crawl-in{0%{translate:-44px 0}35%{translate:-28px 1px}70%{translate:-12px -1px}100%{translate:0 0}}
+@keyframes word-crawl-out{0%{translate:0 0}35%{translate:-14px 1px}70%{translate:-30px -1px}100%{translate:-46px 0}}
+@media(max-width:640px){.bug svg{width:32px;height:32px;margin:4px}.bug.section-bug svg{width:30px;height:30px;margin:3px}}
+
+/* Let visitors travel beyond the lip, rather than stopping at the opening. */
+.bug-nook{height:110px}
+.bug.section-bug{animation-duration:3s}
+.bug.section-bug.retreating{animation-duration:2.8s}
+.word-nook{width:58px;height:140px}
+@keyframes crawl-in{0%{translate:0 -44px}35%{translate:1px 0}70%{translate:-1px 32px}100%{translate:0 60px}}
+@keyframes crawl-out{0%{translate:0 60px}35%{translate:1px 28px}70%{translate:-1px -12px}100%{translate:0 -48px}}
+@keyframes word-crawl-in{0%{translate:-44px 0}35%{translate:8px 0}70%{translate:8px 34px}100%{translate:8px 68px}}
+@keyframes word-crawl-out{0%{translate:8px 68px}35%{translate:8px 34px}65%{translate:8px 0}100%{translate:-48px 0}}
+.word-nook .section-bug svg{animation:word-turn-in 3s linear both}
+.word-nook .section-bug.retreating svg{animation:word-turn-out 2.8s .2s linear both}
+.word-nook .section-bug:hover svg,.word-nook .section-bug:focus-visible svg,.word-nook .section-bug.targeted svg{animation-play-state:paused}
+@keyframes word-turn-in{0%,30%{transform:rotate(90deg)}45%,100%{transform:rotate(180deg)}}
+@keyframes word-turn-out{0%,60%{transform:rotate(0deg)}75%,100%{transform:rotate(270deg)}}
+@media(prefers-reduced-motion:reduce){.bug.section-bug{translate:0 60px}.word-nook .bug.section-bug{translate:8px 68px}.word-nook .section-bug svg{animation:none!important;transform:rotate(180deg)}}
+
+/* Varied small journeys; stepping continues through the entire return. */
+.bug.section-bug{animation-duration:var(--crawl-speed,3s)}
+.word-nook .section-bug svg{animation-duration:var(--crawl-speed,3s)}
+.bug.section-bug.retreating{animation-duration:2.8s;--legs-play:running!important}
+.word-nook .section-bug.retreating svg{animation-duration:2.8s;animation-play-state:running!important}
+@keyframes crawl-in{0%{translate:0 -44px}35%{translate:1px 0}70%{translate:-1px calc(var(--crawl-distance,60px) * .5)}100%{translate:0 var(--crawl-distance,60px)}}
+@keyframes crawl-out{0%{translate:0 var(--crawl-distance,60px)}35%{translate:1px calc(var(--crawl-distance,60px) * .5)}70%{translate:-1px -12px}100%{translate:0 -48px}}
+@keyframes word-crawl-in{0%{translate:-44px 0}35%{translate:8px 0}70%{translate:8px calc(var(--crawl-distance,68px) * .5)}100%{translate:8px var(--crawl-distance,68px)}}
+@keyframes word-crawl-out{0%{translate:8px var(--crawl-distance,68px)}35%{translate:8px calc(var(--crawl-distance,68px) * .5)}65%{translate:8px 0}100%{translate:-48px 0}}
+.web-prey{position:fixed;z-index:31;pointer-events:none;width:32px;height:32px;transform:translate(-50%,-50%);opacity:0}
+.web-prey svg{width:100%;height:100%}.web-prey.visible{opacity:1}
+.silk-thread.shooting path{stroke-dasharray:1;stroke-dashoffset:0;animation:web-shoot .45s ease-out both}
+@keyframes web-shoot{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+
+.bug-nook:not(.word-nook){width:110px}
+.bug-nook:not(.word-nook) .section-bug{left:32px}
+.bug-nook:not(.word-nook) .section-bug svg{transform:rotate(var(--travel-angle,180deg))}
+.bug-nook:not(.word-nook) .section-bug.retreating svg{transform:rotate(var(--return-angle,0deg))}
+@keyframes crawl-in{0%{translate:0 -44px}35%{translate:0 0}70%{translate:calc(var(--crawl-drift,0px) * .5) calc(var(--crawl-distance,60px) * .5)}100%{translate:var(--crawl-drift,0px) var(--crawl-distance,60px)}}
+@keyframes crawl-out{0%{translate:var(--crawl-drift,0px) var(--crawl-distance,60px)}35%{translate:calc(var(--crawl-drift,0px) * .5) calc(var(--crawl-distance,60px) * .5)}70%{translate:0 -12px}100%{translate:0 -48px}}
+
+/* Hero introduction: a crawling demonstration, then one user-facing bug. */
+.hero-nook{position:absolute;width:72px;height:138px;overflow:hidden;pointer-events:none}
+.hero-nook-a{left:4%;top:25%}.hero-nook-b{right:2%;top:44%}.hero-nook-c{display:none}
+.hero-nook .bug{left:10px;right:auto;top:5px;animation:hero-crawl 2.4s linear both;--legs-play:running}
+.hero-nook .bug svg{transform:rotate(180deg)}
+.hero-nook-b{visibility:hidden}
+.hero-user-turn .hero-nook-b{visibility:visible}
+.hero-user-turn .hero-nook-b .bug{animation:hero-crawl 2.4s linear both}
+.hero-return-visit .hero-nook-a{display:none}
+.hero-nook-b .discovery-hint{position:fixed;left:auto;right:24px;top:135px;bottom:auto;max-width:170px}
+.hero-nook .bug-name{display:none}
+@keyframes hero-crawl{from{translate:0 -48px}to{translate:0 68px}}
+@media(prefers-reduced-motion:reduce){.hero-nook .bug{animation:none!important;translate:0 68px;--legs-play:paused}}
+.hero-nook-b .bug{animation:none;translate:0 -48px}
+.hero-user-turn .hero-nook-b .bug{animation:hero-crawl 2.4s linear both;translate:0 0}
+.hero-nook-b{overflow:visible}
+.hero-nook-b .discovery-hint{position:absolute;left:auto;right:0;top:auto;bottom:calc(100% + 8px);max-width:170px;animation:hero-hint-delay 2.4s step-end both}
+@keyframes hero-hint-delay{from{visibility:hidden;opacity:0}to{visibility:visible;opacity:1}}
+@media(prefers-reduced-motion:reduce){.hero-user-turn .hero-nook-b .bug{animation:none!important;translate:0 68px}.hero-nook-b .discovery-hint{animation:none}}
+
+.hero-user-turn .hero-nook-a{visibility:hidden}
+
+/* Longer paths: word bugs use the text gutter; card bugs roam below the card. */
+.bug-nook{height:205px}.word-nook{height:205px}
+.bug-nook:not(.word-nook){width:min(400px,100%);height:90px;--card-distance:min(var(--crawl-distance,130px),calc((100vw - 112px)/2))}
+.bug-nook:not(.word-nook) .section-bug{left:calc(50% - 18px)}
+@keyframes crawl-in{0%{translate:0 -44px}30%{translate:0 34px}100%{translate:calc(var(--card-distance) * var(--crawl-direction,1)) 34px}}
+@keyframes crawl-out{0%{translate:calc(var(--card-distance) * var(--crawl-direction,1)) 34px}70%{translate:0 34px}100%{translate:0 -48px}}
+.bug-nook:not(.word-nook) .section-bug svg{animation:card-turn-in var(--crawl-speed,3s) linear both}
+.bug-nook:not(.word-nook) .section-bug.retreating svg{animation:card-turn-out 2.8s .2s linear both}
+@keyframes card-turn-in{0%,24%{transform:rotate(180deg)}38%,100%{transform:rotate(calc(180deg - var(--crawl-direction,1) * 90deg))}}
+@keyframes card-turn-out{0%,60%{transform:rotate(calc(180deg + var(--crawl-direction,1) * 90deg))}78%,100%{transform:rotate(0deg)}}
+.bug.targeted,.bug.section-bug.retreating.targeted,.bug.targeted svg{animation-play-state:paused!important;--legs-play:paused!important}
+.bug{touch-action:manipulation}
+@media(prefers-reduced-motion:reduce){.bug-nook:not(.word-nook) .section-bug svg{animation:none!important}}
+
+.bug-nook .bug.section-bug.retreating.targeted svg{animation-play-state:paused!important}
+
+
+/* Original CSS stepping and pace; only the path shape varies. */
+.bug-nook:not(.word-nook).path-up .section-bug{animation-name:card-up-in}
+.bug-nook:not(.word-nook).path-up .section-bug.retreating{animation-name:card-up-out}
+.bug-nook:not(.word-nook).path-down .section-bug{animation-name:card-down-in}
+.bug-nook:not(.word-nook).path-down .section-bug.retreating{animation-name:card-down-out}
+.bug-nook:not(.word-nook).path-diagonal .section-bug{animation-name:card-diagonal-in}
+.bug-nook:not(.word-nook).path-diagonal .section-bug.retreating{animation-name:card-diagonal-out}
+@keyframes card-up-in{0%{translate:0 -44px}25%{translate:0 34px}70%{translate:calc(var(--card-distance)*var(--crawl-direction,1)) 34px}100%{translate:calc(var(--card-distance)*var(--crawl-direction,1)) 6px}}
+@keyframes card-up-out{0%{translate:calc(var(--card-distance)*var(--crawl-direction,1)) 6px}30%{translate:calc(var(--card-distance)*var(--crawl-direction,1)) 34px}75%{translate:0 34px}100%{translate:0 -48px}}
+@keyframes card-down-in{0%{translate:0 -44px}25%{translate:0 18px}70%{translate:calc(var(--card-distance)*var(--crawl-direction,1)) 18px}100%{translate:calc(var(--card-distance)*var(--crawl-direction,1)) 48px}}
+@keyframes card-down-out{0%{translate:calc(var(--card-distance)*var(--crawl-direction,1)) 48px}30%{translate:calc(var(--card-distance)*var(--crawl-direction,1)) 18px}75%{translate:0 18px}100%{translate:0 -48px}}
+@keyframes card-diagonal-in{0%{translate:0 -44px}25%{translate:0 6px}100%{translate:calc(var(--card-distance)*var(--crawl-direction,1)) 48px}}
+@keyframes card-diagonal-out{0%{translate:calc(var(--card-distance)*var(--crawl-direction,1)) 48px}75%{translate:0 6px}100%{translate:0 -48px}}
+.bug-nook:not(.word-nook).path-up .section-bug svg{animation-name:card-up-heading}
+.bug-nook:not(.word-nook).path-down .section-bug svg{animation-name:card-down-heading}
+.bug-nook:not(.word-nook).path-diagonal .section-bug svg{animation-name:card-diagonal-heading}
+@keyframes card-up-heading{0%,20%{transform:rotate(180deg)}32%,65%{transform:rotate(calc(180deg - var(--crawl-direction,1)*90deg))}80%,100%{transform:rotate(0deg)}}
+@keyframes card-down-heading{0%,20%{transform:rotate(180deg)}32%,65%{transform:rotate(calc(180deg - var(--crawl-direction,1)*90deg))}80%,100%{transform:rotate(180deg)}}
+@keyframes card-diagonal-heading{0%,20%{transform:rotate(180deg)}32%,100%{transform:rotate(calc(180deg - var(--crawl-direction,1)*70deg))}}
+.bug-nook:not(.word-nook) .section-bug.retreating svg{animation-name:card-turn-out}
+.word-nook.path-up .section-bug{top:133px;animation-name:word-up-in}
+.word-nook.path-up .section-bug.retreating{animation-name:word-up-out}
+@keyframes word-up-in{0%{translate:-44px 0}35%{translate:8px 0}100%{translate:8px calc(-1 * var(--crawl-distance,120px))}}
+@keyframes word-up-out{0%{translate:8px calc(-1 * var(--crawl-distance,120px))}65%{translate:8px 0}100%{translate:-48px 0}}
+.word-nook.path-up .section-bug svg{animation-name:word-up-heading}
+@keyframes word-up-heading{0%,30%{transform:rotate(90deg)}45%,100%{transform:rotate(0deg)}}
+.word-nook.path-up .section-bug.retreating svg{animation-name:word-up-return-heading}
+@keyframes word-up-return-heading{0%,60%{transform:rotate(180deg)}75%,100%{transform:rotate(270deg)}}
+
+.bug-nook.path-up:not(.word-nook) .section-bug.retreating svg{animation-name:card-up-return-heading}
+.bug-nook.path-down:not(.word-nook) .section-bug.retreating svg{animation-name:card-down-return-heading}
+.bug-nook.path-diagonal:not(.word-nook) .section-bug.retreating svg{animation-name:card-diagonal-return-heading}
+@keyframes card-up-return-heading{0%,23%{transform:rotate(180deg)}35%,70%{transform:rotate(calc(180deg + var(--crawl-direction,1)*90deg))}85%,100%{transform:rotate(0deg)}}
+@keyframes card-down-return-heading{0%,23%{transform:rotate(0deg)}35%,70%{transform:rotate(calc(180deg + var(--crawl-direction,1)*90deg))}85%,100%{transform:rotate(0deg)}}
+@keyframes card-diagonal-return-heading{0%,68%{transform:rotate(calc(360deg - var(--crawl-direction,1)*70deg))}85%,100%{transform:rotate(0deg)}}
+
+/* Light theme: inkier details, readable metadata, and quiet white surfaces. */
+.light{--bg:#f5f8ff;--panel:#ffffff;--border:#c6d2e3;--text:#14264a;--muted:#4e607a}
+.light .nav{background:#fff;box-shadow:0 3px 20px #24487906}
+.light .nav nav{color:#405779}.light .nav nav a:hover,.light .text-link:hover{color:#1c56a5}
+.light .button{background:#2861d0;color:#fff;box-shadow:0 6px 22px #245ae614}.light .button:hover{background:#1d50b3}
+.light .forward sup{background:#326fdc;color:white}
+.light .theme-toggle{background:#e6eefc;border-color:#aebfda;color:#274e86}
+.light .grid{background:repeating-linear-gradient(90deg,transparent 0,transparent calc(16.666% - 1px),#34578016 16.666%)}
+.light .eyebrow,.light .hero-meta,.light .workflow-strip>span{color:#526680}
+.light .hero-meta a{color:#304f7e}.light .text-link{border-color:#879bb9}
+.light h2 span{color:#586f91}.light .section{border-color:var(--border)}
+.light .step-number,.light .step-number i{color:#486386}.light .steps code{color:#285ba6}
+.light .conversation{background:#fff;border-color:#c6d2e3;box-shadow:0 6px 26px #24487905}
+.light .conversation-label,.light .event-stream time,.light .roles{color:#496381}
+.light .event-stream code,.light .human-gate,.light .rewards strong{color:#285ba6}
+.light .chat{border-color:#b9cae2}.light .chat.human{background:#f0f4fb}.light .chat.agent{background:#e5eeff;border-color:#b4c9ea}
+.light .live-dot{background:#326cc7;box-shadow:none}
+.light footer,.light footer>a:last-child{color:#506581}
+.light .bug-a{color:#3268a8}.light .bug-b{color:#99552b}.light .bug-c{color:#7151a8}.light .bug.section-bug{color:#526a82}
+.light .bug-name,.light .discovery-hint{background:#fff;color:#304866;border-color:#b9c8dd;box-shadow:0 3px 12px #24487912}
+.light .silk-thread path{stroke:#516a85;stroke-opacity:.85}
+.light .system-puff{color:#3268a8}.light .system-compliment{color:#244f8d;text-shadow:none}
+.light .mascot-eyes i{box-shadow:0 0 0 1px #284b79}
+.light :focus-visible{outline-color:#245bc6}
+
+/* The first crawler has a physical hiding place under the original CTA. */
+.primary-shelter{position:relative;display:inline-block;isolation:isolate}
+.primary-shelter>.primary{position:relative;z-index:3}
+.primary-shelter>.hero-nook-b{left:calc(100% - 35px);right:auto;top:calc(100% - 5px);width:115px;height:100px;z-index:2}
+.primary-shelter .hero-nook-b .bug{animation-name:button-crawl;pointer-events:auto}
+.primary-shelter .hero-nook-b .bug svg{transform:rotate(140deg)}
+@keyframes button-crawl{0%{translate:0 -48px}35%{translate:3px -12px}100%{translate:35px 20px}}
+@media(prefers-reduced-motion:reduce){.primary-shelter .hero-nook-b .bug{animation:none!important;translate:35px 20px}}
+
+/* Keep the initial emergence visible beside the CTA, including shorter windows. */
+.primary-shelter>.hero-nook-b{top:calc(100% - 35px);width:135px}
+@keyframes button-crawl{0%{translate:0 -48px}35%{translate:12px -20px}100%{translate:48px 0}}
+@media(prefers-reduced-motion:reduce){.primary-shelter .hero-nook-b .bug{translate:48px 0}}
+
+/* Automatic bug uses its original hero shelter; the CTA shelters the user's bug. */
+.primary-shelter>.hero-nook-b{overflow:hidden;visibility:hidden}
+.hero-user-turn .primary-shelter>.hero-nook-b{visibility:visible}
+.primary-shelter .hero-nook-b .bug{animation:none;translate:0 -48px}
+.hero-user-turn .primary-shelter .hero-nook-b .bug{animation:button-crawl 2.4s linear both}
+.primary-shelter .hero-nook-b .discovery-hint{position:absolute;left:auto;right:5px;top:auto;bottom:calc(100% + 8px);max-width:170px}
+@media(prefers-reduced-motion:reduce){.hero-user-turn .primary-shelter .hero-nook-b .bug{animation:none!important;translate:48px 0}}
+
+.hero-user-turn .primary-shelter>.hero-nook-b{overflow:visible}
+.primary-shelter .hero-nook-b .bug svg{clip-path:inset(0);}
+
+.hero-user-turn .primary-shelter .hero-nook-b .bug svg{animation:button-peek 2.4s linear both}
+@keyframes button-peek{0%{clip-path:inset(100% 0 0 0)}35%,100%{clip-path:inset(0)}}
+@media(prefers-reduced-motion:reduce){.hero-user-turn .primary-shelter .hero-nook-b .bug svg{animation:none!important}}
+
+.primary-shelter .hero-nook-b .discovery-hint{left:calc(100% + 8px);right:auto;bottom:auto;top:0;width:150px}
+@media(max-width:640px){.primary-shelter .hero-nook-b .discovery-hint{left:auto;right:0;top:calc(100% + 6px)}}
+
+/* A plain, straight crawl: the actual button occludes the bug until it clears it. */
+.hero-user-turn .primary-shelter .hero-nook-b .bug{animation:button-crawl 2.4s linear both}
+.primary-shelter .hero-nook-b .bug svg,.hero-user-turn .primary-shelter .hero-nook-b .bug svg{animation:none!important;clip-path:none;transform:rotate(90deg)}
+@keyframes button-crawl{from{translate:-24px 0}to{translate:72px 0}}
+@media(prefers-reduced-motion:reduce){.hero-user-turn .primary-shelter .hero-nook-b .bug{animation:none!important;translate:72px 0}}
