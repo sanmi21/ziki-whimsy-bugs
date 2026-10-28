@@ -168,10 +168,10 @@ test('manual catching before the introduction prevents a second automatic chase'
 
 test('page-wide visitors require initial dwell and the shared cooldown', () => {
   const { sectionDelay } = setup();
-  assert.equal(sectionDelay(100000, 100000, -Infinity), 4000);
+  assert.equal(sectionDelay(100000, 100000, -Infinity), 1000);
   assert.equal(sectionDelay(120000, 100000, -Infinity), 0);
-  assert.equal(sectionDelay(120000, 100000, 110000), 5000);
-  assert.equal(sectionDelay(120000, 100000, 110000), 5000);
+  assert.equal(sectionDelay(120000, 100000, 118000), 4000);
+  assert.equal(sectionDelay(120000, 100000, 118000), 4000);
   assert.equal(sectionDelay(240000, 220000, 110000), 0);
 });
 
@@ -482,13 +482,13 @@ test('hero re-enters recurring visits after the original button bug is caught', 
   state.document.documentElement.classList.add('hero-user-turn');
   state.lifecycle.setReadingSection({});
   state.lifecycle.chooseSection();
-  assert.equal(state.pendingTimers.at(-1).delay,1000);
+  assert.equal(state.pendingTimers.at(-1).delay,250);
   state.bugs[1].classList.add('caught');
   state.lifecycle.chooseSection();
   assert.equal(state.pendingTimers.at(-1).delay,100);
 });
 
-test('a missed offscreen visitor releases its slot with a two-second relocation pause', () => {
+test('a missed offscreen visitor releases its slot with a 400-millisecond relocation pause', () => {
   const state=setup(false);
   const bug=state.bugs[0];
   bug.getBoundingClientRect=()=>({left:20,top:-80,right:60,bottom:-40});
@@ -499,7 +499,7 @@ test('a missed offscreen visitor releases its slot with a two-second relocation 
   state.lifecycle.setVisitor({bug,section:{},nook:{remove(){removed=true;}}});
   state.lifecycle.chooseSection();
   assert.equal(removed,true);
-  assert.ok(state.pendingTimers.at(-1).delay>=1900 && state.pendingTimers.at(-1).delay<=2000);
+  assert.ok(state.pendingTimers.at(-1).delay>=300 && state.pendingTimers.at(-1).delay<=400);
 });
 
 test('a low button shelter falls back to an onscreen edge in the same section', () => {
@@ -519,4 +519,12 @@ test('a low button shelter falls back to an onscreen edge in the same section', 
   assert.equal(created[0].style.visibility,'');
   assert.equal(created[0].style.top,'3px');
   assert.equal(state.pendingTimers.at(-1).delay,12000);
+});
+
+test('faster scheduling respects the one-second start and six-second cooldown boundaries', () => {
+  const {sectionDelay}=setup();
+  assert.equal(sectionDelay(100999,100000,-Infinity),1);
+  assert.equal(sectionDelay(101000,100000,-Infinity),0);
+  assert.equal(sectionDelay(105999,90000,100000),1);
+  assert.equal(sectionDelay(106000,90000,100000),0);
 });

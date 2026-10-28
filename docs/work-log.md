@@ -314,3 +314,19 @@
 - Objective: user authorized pushing the section-based timing and recurring hero changes on existing `main`.
 - Verification: checked the branch, destination, pending files, and whitespace; both syntax checks and all 31 regression checks passed. Fetched `origin/main`; no divergence.
 - Publication checkpoint: commit the implementation, tests, README, work log, command record, and recurring-hero preview as `Keep section bugs recurring while browsing`. Push and remote verification follow; final publication result is reported in chat.
+
+
+## 2026-10-28 — Faster bug appearances
+
+- Objective and starting point: users can scroll past the page before encountering recurring bugs. Existing shared timing waits 4 seconds initially, 15 seconds between visitors, and 2 seconds to relocate missed visitors. Preserve section-owned shelters, one recurring visitor, safe viewport placement, crawl motion, and catch styles.
+- Checkpoint 1 — Investigation: appearance timing is centralized in `eggTiming`; additional scheduler retries can add another 1–2 seconds. Shorten the initial wait to 1 second, normal cooldown to 6 seconds, relocation pause to 400 ms, and scheduler retries to 250 ms. Keep the 12-second visitor lifetime and focus/catch protection.
+- Checkpoint 2 — Implementation: changed only scheduler timing constants and retry delays in [script](../dist/app.js); updated [README](../README.md) with the new waits and safe-placement requirements. Section placement, crawl speed, original hero introduction, and all three mascot catch styles remain unchanged.
+- Checkpoint 3 — Verification: both syntax checks, all 32 regression tests, and the whitespace check passed. Updated timing expectations and added exact start/cooldown boundary coverage. Existing tests still cover section transitions, hero recurrence, relocation, and viewport rejection. Browser timing was not remeasured for this constants-only revision.
+- Outcome: completed locally; reload the preview to use the faster scheduler. No commit, push, or deployment performed.
+
+
+## 2026-10-28 — Publish faster appearances
+
+- Objective: user authorized committing and pushing the faster scheduler on existing `main`.
+- Verification: confirmed the intended branch and remote, fetched `origin/main`, and found no divergence. Both syntax checks, all 32 regression tests, and the whitespace check passed.
+- Publication checkpoint: commit timing changes, regression checks, README, work log, and command record as `Make bug encounters appear sooner`, then push and verify the remote hash. Final publication result is reported in chat.

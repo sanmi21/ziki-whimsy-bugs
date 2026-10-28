@@ -327,7 +327,7 @@ reducedMotion.addEventListener('change', event => {
 addEventListener('resize', () => activeAnimation?.finish());
 
 // Page-wide visitors: one recurring bug, visible shelters, and a shared cooldown.
-const eggTiming = { dwell: 4000, globalCooldown: 15000, lifetime: 12000, relocation: 2000 };
+const eggTiming = { dwell: 1000, globalCooldown: 6000, lifetime: 12000, relocation: 400, retry: 250 };
 function sectionEggDelay(now, visibleSince, lastAny) {
   return Math.max(0, eggTiming.dwell - (now - visibleSince),
     eggTiming.globalCooldown - (now - lastAny));
@@ -412,14 +412,14 @@ function placeVisitorShelter(nook, section, preferWord) {
 function scheduleVisitor() {
   clearTimeout(dwellTimer);
   if (document.hidden || activeVisitor) return;
-  if (!visibleSection) { dwellTimer = setTimeout(() => { dwellTimer = undefined; chooseSection(); }, 1000); return; }
+  if (!visibleSection) { dwellTimer = setTimeout(() => { dwellTimer = undefined; chooseSection(); }, eggTiming.retry); return; }
   const delay = sectionEggDelay(Date.now(), visibleSince, lastAnyVisitor);
   dwellTimer = setTimeout(() => {
     dwellTimer = undefined;
     if (document.hidden || !visibleSection) return;
     const section = visibleSection;
     if (section.classList?.contains('hero') && !userBug.classList.contains('caught') && !introCancelled) { chooseSection(); return; }
-    if (busy) { dwellTimer = setTimeout(scheduleVisitor, 2000); return; }
+    if (busy) { dwellTimer = setTimeout(scheduleVisitor, eggTiming.retry); return; }
     const nook = document.createElement('div');
     nook.className = 'bug-nook';
     // Measure while hidden so a rejected shelter never flashes onscreen.
@@ -456,7 +456,7 @@ function scheduleVisitor() {
     }
     if (!isVisibleCrawlArea(nook.getBoundingClientRect(), innerWidth, innerHeight)) {
       nook.remove();
-      dwellTimer = setTimeout(scheduleVisitor, 1000);
+      dwellTimer = setTimeout(scheduleVisitor, eggTiming.retry);
       return;
     }
     nook.style.visibility = '';
