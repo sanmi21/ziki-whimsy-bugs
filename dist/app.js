@@ -61,7 +61,7 @@ async function runIntroduction() {
 }
 // Replay on every page load. Other sections have their own visibility timers.
 if (reducedMotion.matches) showTurnHint();
-else introTimer = setTimeout(runIntroduction, 2700);
+else introTimer = setTimeout(runIntroduction, 1000);
 function retryVisibleIntroduction() {
   if (userTurnPending && !document.hidden) showTurnHint();
   if (!introPending || introCancelled || introStarted) return;
@@ -327,7 +327,7 @@ reducedMotion.addEventListener('change', event => {
 addEventListener('resize', () => activeAnimation?.finish());
 
 // Page-wide visitors: one recurring bug, visible shelters, and a shared cooldown.
-const eggTiming = { dwell: 1000, globalCooldown: 6000, lifetime: 12000, relocation: 400, retry: 250 };
+const eggTiming = { dwell: 250, globalCooldown: 2000, lifetime: 6000, relocation: 100, retry: 100 };
 function sectionEggDelay(now, visibleSince, lastAny) {
   return Math.max(0, eggTiming.dwell - (now - visibleSince),
     eggTiming.globalCooldown - (now - lastAny));

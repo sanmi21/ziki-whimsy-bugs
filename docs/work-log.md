@@ -330,3 +330,19 @@
 - Objective: user authorized committing and pushing the faster scheduler on existing `main`.
 - Verification: confirmed the intended branch and remote, fetched `origin/main`, and found no divergence. Both syntax checks, all 32 regression tests, and the whitespace check passed.
 - Publication checkpoint: commit timing changes, regression checks, README, work log, and command record as `Make bug encounters appear sooner`, then push and verify the remote hash. Final publication result is reported in chat.
+
+
+## 2026-10-28 — Presentation timing
+
+- Objective and starting point: prioritize a quick instructor demonstration; the previous 1-second initial wait and 6-second cooldown still feel slow. Keep section-owned shelters and one recurring bug.
+- Checkpoint 1 — Investigation: the hero introduction still starts after 2.7 seconds independently of the recurring timer. Tune both: intro at 1 second, recurring dwell at 250 ms, cooldown at 2 seconds, missed-bug relocation and scheduler retries at 100 ms. Shorten ignored visitor lifetime from 12 to 6 seconds so repeat demonstrations cycle sooner.
+- Checkpoint 2 — Implementation: updated only the introduction delay and recurring timing constants in [script](../dist/app.js). Preserved crawl speed, section placement, visibility guards, reduced-motion behavior, and all three mascot catches. Updated [README](../README.md) to describe the presentation cadence.
+- Checkpoint 3 — Verification: both syntax checks, all 33 regression tests, and the whitespace check passed. Timing tests cover the 250-ms dwell, 2-second cooldown, 100-ms relocation/retry, 6-second lifetime, and 1-second introduction scheduling. Browser timing was not remeasured in this revision.
+- Outcome: presentation timing implemented locally; reload the preview to use it. A safe visible shelter and an idle catch slot are still required. No commit, push, or deployment performed.
+
+
+## 2026-10-28 — Publish presentation timing
+
+- Objective: user authorized publishing the presentation cadence on existing `main`.
+- Verification: confirmed branch and origin, fetched `origin/main`, and found no divergence. Both syntax checks, all 33 regression tests, and the whitespace check passed.
+- Publication checkpoint: commit the timing constants, tests, README, work log, and command record as `Tune bug timing for presentation`, then push and verify the remote. The final publication result is reported in chat.
