@@ -346,3 +346,19 @@
 - Objective: user authorized publishing the presentation cadence on existing `main`.
 - Verification: confirmed branch and origin, fetched `origin/main`, and found no divergence. Both syntax checks, all 33 regression tests, and the whitespace check passed.
 - Publication checkpoint: commit the timing constants, tests, README, work log, and command record as `Tune bug timing for presentation`, then push and verify the remote. The final publication result is reported in chat.
+
+
+## 2026-10-31 — Tiny issue tickets
+
+- Objective: replace insects with folded issue tickets while preserving Ziki’s three catch motions, presentation timing, section shelters, and layout.
+- Investigation: hero targets, generated visitors, and the dragged copy share one SVG. Replace that symbol and collection wording; retain existing internal hooks. Tickets follow existing translation paths with a steady paper tilt.
+- Implementation: replaced the shared insect SVG with folded issue-ticket artwork and updated hero/visitor accessibility labels, hints, metadata, and collection feedback. Removed insect limb artwork and leg-step styling; paper stays legible while existing translation paths run. Updated [README](../README.md), keeping legacy internal selectors to preserve behavior.
+- Verification: both syntax checks and all 33 interaction tests passed. All five hero/section/drag SVG references resolve. Rendered and inspected [ticket preview](issue-ticket-preview.png) at actual 32/36-pixel sizes and enlarged in both palettes. Computer Use native connection was unavailable on two attempts, so live browser/phone visual verification remains outstanding. No new runtime dependencies were added.
+- Outcome: implemented locally; Ziki mascot animation code and presentation timing are unchanged. No commit, push, or deployment performed.
+
+
+## 2026-10-31 — Publish issue tickets
+
+- Objective: user authorized pushing the ticket replacement on existing `main`.
+- Verification: confirmed branch and origin, fetched `origin/main`, and found no divergence. Both syntax checks, all 33 interaction tests, and the whitespace check passed. The restarted local server returned HTTP 200 with the ticket symbol present. Live browser visual verification remains unavailable; the rendered dark/light asset was inspected.
+- Publication checkpoint: commit source, tests, README, work log, command record, and ticket preview as `Replace insects with tiny issue tickets`, then push and compare the remote hash. Final publication result is reported in chat.

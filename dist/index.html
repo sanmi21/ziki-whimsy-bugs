@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A Ziki homepage concept: spot a little bug and let your agent lend a hand.">
+  <meta name="description" content="A Ziki homepage concept: spot a tiny issue ticket and let your agent lend a hand.">
   <meta name="theme-color" content="#0c162e">
   <title>Ziki — Better together</title>
   <link rel="icon" href="logo.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css">
@@ -24,13 +24,13 @@
         <p class="eyebrow">COLLABORATIVE SOFTWARE DELIVERY</p>
         <h1 id="hero-title" aria-label="Move every issue forward with your agents"><span class="headline-top">Move every issue</span><span class="forward">f<span class="letter-o">o<span></span></span>rward<sup>↗</sup></span><span class="headline-bottom">with your agents</span></h1>
         <p class="intro">Agents discover issues, propose a plan, deliver fixes, and validate work on behalf of your team. Every action is permissioned, attributable, and under human control.</p>
-        <span class="primary-shelter"><a class="button primary" href="https://ziki.dev/login">Get started free <span>→</span></a><div class="hero-nook hero-nook-b"><button class="bug bug-b" aria-label="Catch the peach bug" data-name="peach"><svg viewBox="0 0 80 80" aria-hidden="true"><use href="#bug-shape"/></svg><span class="bug-name" aria-hidden="true">Spotted a bug? Squash it.</span></button></div></span>
+        <span class="primary-shelter"><a class="button primary" href="https://ziki.dev/login">Get started free <span>→</span></a><div class="hero-nook hero-nook-b"><button class="bug bug-b" aria-label="Collect the peach issue ticket" data-name="peach"><svg viewBox="0 0 80 80" aria-hidden="true"><use href="#issue-ticket-shape"/></svg><span class="bug-name" aria-hidden="true">Spotted an issue? Collect it.</span></button></div></span>
         <a class="text-link" href="#how-it-works">See how it works</a>
       </div>
-      <div class="ambient-bugs" aria-label="Little bugs around Ziki">
+      <div class="ambient-bugs" aria-label="Tiny issue tickets around Ziki">
 
-          <div class="hero-nook hero-nook-a"><button class="bug bug-a" aria-label="Catch the blue bug" data-name="blue"><svg viewBox="0 0 80 80" aria-hidden="true"><use href="#bug-shape"/></svg><span class="bug-name" aria-hidden="true">Spotted a bug? Squash it.</span><span class="discovery-hint" id="bug-hint" aria-hidden="true">Psst… spotted a bug?<br>Tap it.</span></button></div>
-          <div class="hero-nook hero-nook-c"><button class="bug bug-c" aria-label="Catch the lilac bug" data-name="lilac"><svg viewBox="0 0 80 80" aria-hidden="true"><use href="#bug-shape"/></svg><span class="bug-name" aria-hidden="true">Spotted a bug? Squash it.</span></button></div>
+          <div class="hero-nook hero-nook-a"><button class="bug bug-a" aria-label="Collect the blue issue ticket" data-name="blue"><svg viewBox="0 0 80 80" aria-hidden="true"><use href="#issue-ticket-shape"/></svg><span class="bug-name" aria-hidden="true">Spotted an issue? Collect it.</span><span class="discovery-hint" id="bug-hint" aria-hidden="true">Psst… an open issue.<br>Tap to collect it.</span></button></div>
+          <div class="hero-nook hero-nook-c"><button class="bug bug-c" aria-label="Collect the lilac issue ticket" data-name="lilac"><svg viewBox="0 0 80 80" aria-hidden="true"><use href="#issue-ticket-shape"/></svg><span class="bug-name" aria-hidden="true">Spotted an issue? Collect it.</span></button></div>
       </div>
       <div class="workflow-strip"><span>BUILT AROUND YOUR WORKFLOW</span><div>Issues <i>↗</i> Agents <i>↗</i> Pull requests <i>↗</i> Reviews</div></div>
     </section>
@@ -53,23 +53,16 @@
   <footer><a class="brand" href="#top"><img src="logo.svg" alt="" width="28" height="28">ziki</a><span>Human-led. AI-assisted. · Independent homepage prototype</span><a href="https://ziki.dev/llms.txt">API specification ↗</a></footer>
   <svg class="silk-thread" id="silk-thread" aria-hidden="true"><path id="silk-path" pathLength="1"/></svg>
   <div class="system-mascot" id="mascot" aria-hidden="true"><img src="logo.svg" alt=""><span class="mascot-eyes"><i></i><i></i></span></div>
-  <div class="web-prey" id="web-prey" aria-hidden="true"><svg viewBox="0 0 80 80"><use href="#bug-shape"/></svg></div>
+  <div class="web-prey" id="web-prey" aria-hidden="true"><svg viewBox="0 0 80 80"><use href="#issue-ticket-shape"/></svg></div>
   <div class="system-puff" id="puff" aria-hidden="true">✦</div>
   <div class="system-compliment" id="status" role="status" aria-live="polite"></div>
-  <svg class="svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><symbol id="bug-shape" viewBox="0 0 80 80">
-<!-- Three jointed legs on each side; antennae only emerge from the head. -->
-<g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-<g class="leg-a"><path d="M27 34 16 28 10 19M27 59 16 65 16 75M56 46 69 43 75 48"/></g><g class="leg-b"><path d="M24 46 11 43 5 48M53 34 64 28 70 19M53 59 64 65 64 75"/></g>
-<path d="M34 12 30 5 25 3M46 12 50 5 55 3" stroke-width="2.3"/>
-</g>
-<!-- One continuous silhouette: no head/neck seam that could read as a mouth. -->
-<path d="M40 7C33 7 29 11 29 17c0 4 1 6 3 8-5 4-9 12-10 21-1 15 8 27 18 31 10-4 19-16 18-31-1-9-5-17-10-21 2-2 3-4 3-8 0-6-4-10-11-10Z" fill="currentColor"/>
-<path d="M40 35C28 35 24 42 25 53c2 10 8 17 15 21Z" fill="#152338" opacity=".44"/>
-<path d="M40 38v36" fill="none" stroke="#142135" stroke-width="2.5"/>
-<path d="M29 43c-2 7 0 14 4 19" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round" opacity=".22"/>
-<ellipse cx="34" cy="10.5" rx="5" ry="6" fill="#edf1e9"/>
-<ellipse cx="46" cy="10.5" rx="5" ry="6" fill="#edf1e9"/>
-<ellipse cx="34" cy="8.5" rx="2.7" ry="3.2" fill="#101923"/>
-<ellipse cx="46" cy="8.5" rx="2.7" ry="3.2" fill="#101923"/>
+  <svg class="svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><symbol id="issue-ticket-shape" viewBox="0 0 80 80">
+<!-- Folded issue ticket, attention marker, and short content lines. -->
+<path d="M17 7h32l16 16v43a7 7 0 0 1-7 7H17a7 7 0 0 1-7-7V14a7 7 0 0 1 7-7Z" fill="currentColor" fill-opacity=".2" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+<path d="M49 7v16h16" fill="currentColor" fill-opacity=".35" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="27" cy="35" r="10" fill="currentColor"/>
+<path d="M27 29v7" stroke="var(--ticket-ink,#0c162e)" stroke-width="3" stroke-linecap="round"/>
+<circle cx="27" cy="41" r="1.6" fill="var(--ticket-ink,#0c162e)"/>
+<path d="M44 32h11M44 39h8M21 54h33M21 62h24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
 </symbol></defs></svg>
 </body></html>

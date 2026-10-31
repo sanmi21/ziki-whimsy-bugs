@@ -131,3 +131,22 @@ git rev-parse HEAD
 git ls-remote origin refs/heads/main
 git status --short
 ```
+
+## Issue tickets — 2026-10-31
+
+Read-only Git checks in the sandbox used a per-command safe.directory value for this project; no persistent Git trust setting was changed. The sandbox fetch could not connect, so fetch and publication run with the normal user access.
+
+```powershell
+node --check dist/app.js
+node --check serve.mjs
+node --test checks/interaction.test.mjs
+git fetch origin main
+git rev-list --left-right --count HEAD...origin/main
+git add README.md dist/app.js dist/index.html dist/styles.css checks/interaction.test.mjs docs/work-log.md docs/push-commands.md docs/issue-ticket-preview.png
+git diff --cached --check
+git commit -m "Replace insects with tiny issue tickets"
+git push origin main
+git rev-parse HEAD
+git ls-remote origin refs/heads/main
+git status --short
+```

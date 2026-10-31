@@ -56,10 +56,10 @@ test('reduced motion catches without animation or points and prevents duplicate 
   await state.bugs[0].handlers.click({ detail: 0 });
   assert.equal(state.animations.length, 0);
   assert.equal(state.bugs[0].classList.contains('caught'), true);
-  assert.equal(state.nodes['#status'].textContent, 'Nice catch!');
+  assert.equal(state.nodes['#status'].textContent, 'Issue collected!');
   assert.equal(state.bugs[1].disabled, false);
   await state.bugs[0].handlers.click({ detail: 0 });
-  assert.equal(state.nodes['#status'].textContent, 'Nice catch!');
+  assert.equal(state.nodes['#status'].textContent, 'Issue collected!');
   state.pendingTimers.at(-1)();
   assert.equal(state.nodes['#status'].classList.contains('visible'), false);
 });
@@ -135,7 +135,7 @@ test('automatic introduction catches only one bug, then prompts beside a survivo
   assert.equal(state.bugs.filter(bug => bug.classList.contains('caught')).length, 1);
   assert.equal(state.bugs[1].child, state.nodes['#bug-hint']);
   assert.equal(state.nodes['#status'].classList.contains('visible'), false);
-  assert.equal(state.nodes['#bug-hint'].textContent, 'Your turn. Click or tap a bug to squash it.');
+  assert.equal(state.nodes['#bug-hint'].textContent, 'Your turn. Click or tap an issue ticket to collect it.');
   assert.equal(state.document.activeElement, state.document.body);
   assert.equal(setup(false, storage).pendingTimers.length, 2);
 });
@@ -144,7 +144,7 @@ test('reduced motion shows the prompt without an automatic catch', () => {
   const state = setup(true);
   assert.equal(state.animations.length, 0);
   assert.equal(state.bugs.some(bug => bug.classList.contains('caught')), false);
-  assert.equal(state.nodes['#bug-hint'].textContent, 'Your turn. Click or tap a bug to squash it.');
+  assert.equal(state.nodes['#bug-hint'].textContent, 'Your turn. Click or tap an issue ticket to collect it.');
 });
 
 test('manual catching before the introduction prevents a second automatic chase', async () => {

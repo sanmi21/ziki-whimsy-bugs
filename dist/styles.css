@@ -82,13 +82,10 @@ main>.section,main>.closing{position:relative}
 .section-bug svg,.section-bug:hover svg,.section-bug:focus-visible svg{transform:rotate(180deg);transition:transform .2s}
 .bug.section-bug.retreating{animation:crawl-out 1.6s .2s linear both}
 .section-bug.retreating svg{transform:rotate(0deg)}
-.leg-a,.leg-b{transform-box:fill-box;transform-origin:center;animation:leg-step .22s ease-in-out infinite alternate;animation-play-state:var(--legs-play,paused)}
-.leg-b{animation-delay:-.22s}
 .bug:hover,.bug:focus-visible,.bug.targeted{--legs-play:paused!important}
-@keyframes leg-step{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
 @keyframes crawl-in{0%{translate:0 -53px}35%{translate:1px -34px}70%{translate:-1px -15px}100%{translate:0 0}}
 @keyframes crawl-out{0%{translate:0 0}35%{translate:1px -17px}70%{translate:-1px -36px}100%{translate:0 -58px}}
-@media(prefers-reduced-motion:reduce){.bug.section-bug,.bug.section-bug.retreating,.leg-a,.leg-b{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.bug.section-bug,.bug.section-bug.retreating{animation:none!important}}
 
 .bug.section-bug.retreating{animation-play-state:running!important}
 
@@ -286,3 +283,10 @@ main>.section,main>.closing{position:relative}
 
 /* Directed glance for the letter-peek catch; the base logo is unchanged. */
 .system-mascot .mascot-eyes i::after{translate:var(--look-x,0px) var(--look-y,0px);transition:translate .18s ease}
+
+/* Tickets reuse existing paths and catches, with readable paper orientation. */
+:root{--ticket-ink:#0c162e}
+.light{--ticket-ink:#f5f8ff}
+.bug svg{animation:none!important;transform:rotate(-8deg)!important}
+.bug:is(:hover,:focus-visible) svg{transform:rotate(-4deg) scale(1.08)!important}
+.web-prey svg{transform:rotate(-8deg)}

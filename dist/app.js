@@ -36,9 +36,9 @@ function showTurnHint() {
   document.documentElement.classList.add('hero-user-turn');
   remaining.style.setProperty?.('--legs-play', 'running');
   remaining.append(hint);
-  hint.textContent = 'Your turn. Click or tap a bug to squash it.';
+  hint.textContent = 'Your turn. Click or tap an issue ticket to collect it.';
   document.documentElement.classList.add('introducing-bugs');
-  // The catch compliment uses the squashed bug's coordinates. Keep its
+  // The collection feedback uses the collected ticket's coordinates. Keep its
   // announcement accessible, but show the invitation only beside the survivor.
   clearTimeout(messageTimer);
   status.classList.remove('visible');
@@ -205,7 +205,7 @@ async function catchBug(bug, event) {
     heroMotion?.travel.cancel();
     heroMotion?.turn.cancel();
     if (!event.automatic) dismissHint();
-    status.textContent = (['Nice catch!', 'Sharp eyes!', 'Better together.'][bugs.indexOf(bug)] || 'Nice catch!');
+    status.textContent = (['Issue collected!', 'Good find!', 'Better together.'][bugs.indexOf(bug)] || 'Issue collected!');
     const impactX = (catchStyle === 'swoop' ? x : startX) + initialScrollX;
     const impactY = (catchStyle === 'swoop' ? y : startY) + initialScrollY;
     status.style.left = `${Math.min(scrollX + innerWidth - 95, Math.max(scrollX + 95, impactX))}px`;
@@ -428,8 +428,8 @@ function scheduleVisitor() {
     bug.type = 'button';
     bug.className = 'bug section-bug is-crawling';
     bug.dataset.sectionEgg = 'true';
-    bug.setAttribute('aria-label', 'Squash the bug');
-    bug.innerHTML = '<svg viewBox="0 0 80 80" aria-hidden="true"><use href="#bug-shape"/></svg>';
+    bug.setAttribute('aria-label', 'Collect the issue ticket');
+    bug.innerHTML = '<svg viewBox="0 0 80 80" aria-hidden="true"><use href="#issue-ticket-shape"/></svg>';
     bug.addEventListener('animationend', event => {
       if (['crawl-in','word-crawl-in','card-up-in','card-down-in','card-diagonal-in','word-up-in'].includes(event.animationName)) bug.classList.remove('is-crawling');
     });
